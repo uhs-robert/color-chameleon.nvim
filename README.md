@@ -95,7 +95,7 @@ use {
 
 ## 🚀 Usage
 
-### Basic Configuration
+### 🖌️ Basic Configuration
 
 Enable automatic colorscheme switching for mounted filesystems:
 
@@ -111,10 +111,10 @@ require("color-chameleon").setup({
 })
 ```
 
-### Advanced Examples
+### 🎨 Advanced Examples
 
 <details>
-<summary>🖌️ Multiple Directories</summary>
+<summary>🗃️ Multiple Directories</summary>
 <br>
 <!-- multiple-directories:start -->
 Switch to different themes for different project directories:
@@ -136,7 +136,7 @@ require("color-chameleon").setup({
 </details>
 
 <details>
-<summary>🖌️ Environment-Based Switching</summary>
+<summary>🌦️ Environment-Based Switching</summary>
 <br>
 <!-- environment-switching:start -->
 
@@ -180,7 +180,7 @@ rules = {
 </details>
 
 <details>
-<summary>🖌️ Custom Conditions</summary>
+<summary>🧩 Custom Conditions</summary>
 <br>
 <!-- custom-conditions:start -->
 Use custom functions for complex logic:
@@ -216,7 +216,7 @@ require("color-chameleon").setup({
 </details>
 
 <details>
-<summary>🖌️ Combine Multiple Contexts</summary>
+<summary>🤞 Combine Multiple Contexts</summary>
 <br>
 <!-- multiple-contexts:start -->
  Switch themes based on whether you're root, remote, or doing a sudoedit with your own custom logic:
@@ -246,7 +246,7 @@ require("color-chameleon").setup({
 <!-- multiple-contexts:end -->
 </details>
 
-### API Commands
+### 🔧 API Commands
 
 Color Chameleon provides the following commands:
 
@@ -292,7 +292,7 @@ Refer to [configuration](-configuration) below on how to disable or customize.
 
 ## ⚙️ Configuration
 
-### Default Options
+### 🍦 Default Options
 
 ```lua
 require("color-chameleon").setup({
@@ -314,7 +314,7 @@ require("color-chameleon").setup({
 })
 ```
 
-### Rule Structure
+### 👨‍⚖️ Rule Structure
 
 Each rule can have the following fields:
 
@@ -332,11 +332,11 @@ Each rule can have the following fields:
 >
 > Rules are evaluated in order. The first matching rule wins.
 
-## 🎨 Use Cases
+## 💼 Use Cases
 
 You might already have an idea from the examples above but here are some use cases that I like to use personally:
 
-### Distinguish Local vs Remote Work
+### 📡 Distinguish Local vs Remote Work
 
 Instantly know when you're working on remote or mounted filesystems:
 
@@ -347,7 +347,7 @@ rules = {
 }
 ```
 
-### Different Themes for Different Projects
+### 📁 Different Themes for Different Projects
 
 Visually separate work, personal, and client projects:
 
@@ -359,7 +359,7 @@ rules = {
 }
 ```
 
-### Warning Theme for Elevated Privileges
+### 🕵️‍♂️ Warning Theme for Elevated Privileges
 
 Use a high-visibility theme when editing as root:
 
@@ -373,7 +373,7 @@ rules = {
 }
 ```
 
-### Time-Based Themes
+### 🕑️ Time-Based Themes
 
 Automatically switch between light and dark themes based on time of day.
 
