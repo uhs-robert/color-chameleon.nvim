@@ -2,11 +2,11 @@
 -- Autocommand setup for color-chameleon
 
 local AutoCommands = {}
+local AUGROUP_ID = nil
 
 --- Setup the autocommands
 function AutoCommands.setup()
 	local config = require("color-chameleon.config").get()
-	local Chameleon = require("color-chameleon.chameleon")
 
 	-- Check if enabled
 	if not config or not config.enabled then
@@ -19,8 +19,16 @@ function AutoCommands.setup()
 		return
 	end
 
+	-- Clear existing/create new autocmd group
+	if AUGROUP_ID then
+		vim.api.nvim_clear_autocmds({ group = AUGROUP_ID })
+	end
+	AUGROUP_ID = vim.api.nvim_create_augroup("ColorChameleonAutoCommands", { clear = true })
+
 	-- Setup autocmd
+	local Chameleon = require("color-chameleon.chameleon")
 	vim.api.nvim_create_autocmd({ "DirChanged", "BufEnter" }, {
+		group = AUGROUP_ID,
 		callback = function()
 			Chameleon.scan_surroundings(config)
 		end,
@@ -29,6 +37,15 @@ function AutoCommands.setup()
 
 	-- Check on startup
 	Chameleon.scan_surroundings(config)
+end
+
+--- Teardown the autocommands
+function AutoCommands.teardown()
+	if AUGROUP_ID then
+		vim.api.nvim_clear_autocmds({ group = AUGROUP_ID })
+		vim.api.nvim_del_augroup_by_id(AUGROUP_ID)
+		AUGROUP_ID = nil
+	end
 end
 
 return AutoCommands

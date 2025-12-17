@@ -17,7 +17,8 @@ function Api.setup(ColorChameleon)
 
 	-- Command to disable camouflage mode
 	vim.api.nvim_create_user_command("ChameleonDisable", function()
-		-- TODO: Implement disable functionality in camouflage.lua, or do we just remove the auto_commands setup in auto_commands.lua?
+		local AutoCommands = require("color-chameleon.lib.auto_commands")
+		AutoCommands.teardown()
 		vim.notify("Color Chameleon: Camouflage disabled", vim.log.levels.INFO)
 	end, {
 		desc = "Disable ColorChameleon automatic colorscheme switching",
