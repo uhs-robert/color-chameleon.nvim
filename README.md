@@ -11,16 +11,16 @@
   <a href="https://github.com/uhs-robert/color-chameleon.nvim/network/members"><img src="https://img.shields.io/github/forks/uhs-robert/color-chameleon.nvim?colorA=192330&colorB=C799FF&style=for-the-badge&cacheSeconds=4300"></a>
 </p>
 <p align="center">
-Automatically <strong>change your colorscheme</strong> based on your environment, <strong>like a chameleon</strong> adapts to its surroundings.
+Automatically <strong>adapt your colorscheme</strong> to your environment, just <strong>like a chameleon</strong>.
 </p>
 
 ## 🦎 Overview
 
-color-chameleon.nvim lets you set rules for when your colorschemes should apply.
+color-chameleon.nvim lets you set rules for when a colorscheme should be applied.
 
-Set colorschemes for projects, vim environment variables, any custom condition, and/or combinations of each.
+Set colorschemes for projects, environment variables, custom conditions, and/or combinations of each.
 
-It adapts your skin to the environment you're in and switches back automatically too.
+Dynamically adapt your skin to the environment you're in and switch back automatically too.
 
 <details>
 <summary>✨ What's New / 🚨 Breaking Changes</summary>
@@ -31,7 +31,7 @@ It adapts your skin to the environment you're in and switches back automatically
     <summary>🚨 v0.1: Launch Party</summary>
     <!-- v0:start -->
     <h3>✨ FEATURES: New features go here</h3>
-    This is the initial launch. New features will go here in subsequent releases. Feel free to continue on the next section.
+    This is the initial launch. New features will go here in subsequent releases. Feel free to continue onto the next section.
     <br/>
     <h3>🚨 BREAKING CHANGE: Breaking changes go here</h3>
     Nothing broken yet! Check back later.
