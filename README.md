@@ -16,7 +16,7 @@ Automatically <strong>adapt your colorscheme</strong> to your environment, just 
 
 ## 🦎 Overview
 
-color-chameleon.nvim lets you set rules for when a colorscheme should be applied.
+**color-chameleon.nvim** lets you set rules for when a colorscheme should be applied. First matching rule wins!
 
 Set colorschemes for projects, environment variables, custom conditions, and/or combinations of each.
 
@@ -61,14 +61,12 @@ Install the theme with your preferred package manager, such as
 {
   "uhs-robert/color-chameleon.nvim",
   lazy = false,
-  priority = 1000,
+  priority = 900,
   config = function()
     require("color-chameleon").setup({
-      camouflage = {
-        enabled = true,
-        rules = {
-          { path = "~/mnt/", colorscheme = "gruvbox" },
-        },
+      enabled = true,
+      rules = {
+        { path = "~/mnt/", colorscheme = "gruvbox" },
       },
     })
   end
@@ -82,11 +80,9 @@ use {
   "uhs-robert/color-chameleon.nvim",
   config = function()
     require("color-chameleon").setup({
-      camouflage = {
-        enabled = true,
-        rules = {
-          { path = "~/mnt/", colorscheme = "gruvbox" },
-        },
+      enabled = true,
+      rules = {
+        { path = "~/mnt/", colorscheme = "gruvbox" },
       },
     })
   end
@@ -101,13 +97,11 @@ Enable automatic colorscheme switching for mounted filesystems:
 
 ```lua
 require("color-chameleon").setup({
-  camouflage = {
-    enabled = true,
-    rules = {
-      { path = "~/mnt/", colorscheme = "oasis-mirage" }, -- check out oasis.nvim for a cool colorscheme pack!
-    },
-    fallback = "oasis", -- Optional: colorscheme when no rules match
+  enabled = true,
+  rules = {
+    { path = "~/mnt/", colorscheme = "oasis-mirage" }, -- check out oasis.nvim for a cool colorscheme pack!
   },
+  fallback = "oasis", -- Optional: colorscheme when no rules match
 })
 ```
 
@@ -121,13 +115,11 @@ Switch to different themes for different project directories:
 
 ```lua
 require("color-chameleon").setup({
-  camouflage = {
-    enabled = true,
-    rules = {
-      { path = "~/work/", colorscheme = "tokyonight" },
-      { path = "~/personal/", colorscheme = "catppuccin" },
-      { path = "~/mnt/", colorscheme = "oasis" },
-    },
+  enabled = true,
+  rules = {
+    { path = "~/work/", colorscheme = "tokyonight" },
+    { path = "~/personal/", colorscheme = "catppuccin" },
+    { path = "~/mnt/", colorscheme = "oasis" },
   },
 })
 ```
@@ -144,16 +136,14 @@ Change themes based on any `vim.env` variables. These are ENV variables from you
 
 ```lua
 require("color-chameleon").setup({
-  camouflage = {
-    enabled = true,
-    rules = {
-      -- Use gruvbox when in an SSH session
-      { colorscheme = "gruvbox", env = { SSH_CONNECTION = true } },
-      -- Use tokyonight when in TMUX
-      { colorscheme = "tokyonight", env = { TMUX = true } },
-      -- Combine path and environment
-      { path = "~/work/", colorscheme = "catppuccin", env = { WORK_ENV = "production" } },
-    },
+  enabled = true,
+  rules = {
+    -- Use gruvbox when in an SSH session
+    { colorscheme = "gruvbox", env = { SSH_CONNECTION = true } },
+    -- Use tokyonight when in TMUX
+    { colorscheme = "tokyonight", env = { TMUX = true } },
+    -- Combine path and environment
+    { path = "~/work/", colorscheme = "catppuccin", env = { WORK_ENV = "production" } },
   },
 })
 ```
@@ -183,31 +173,45 @@ rules = {
 <summary>🧩 Custom Conditions</summary>
 <br>
 <!-- custom-conditions:start -->
-Use custom functions for complex logic:
+With custom functions for complex logic, the only limit is your imagination:
 
 ```lua
 require("color-chameleon").setup({
-  camouflage = {
-    enabled = true,
-    rules = {
-      -- Check for a specific file in the directory
-      {
-        path = "~/projects/",
-        colorscheme = "nord",
-        condition = function(cwd)
-          return vim.fn.filereadable(cwd .. "/.use-nord-theme") == 1
-        end
-      },
-      -- Use different theme during day/night hours
-      {
-        colorscheme = "gruvbox",
-        condition = function()
-          local hour = tonumber(os.date("%H"))
-          return hour >= 20 or hour < 6
-        end
-      },
-      -- TODO: Add example for sudo
+  enabled = true,
+  rules = {
+    -- Use theme when sudo
+    {
+      colorscheme = "oasis-sol",
+      condition = function()
+        local is_sudoedit = vim.env.SUDOEDIT == "1" -- This requires your shell's config to export a flag like: SUDO_EDITOR="env SUDOEDIT=1 /usr/bin/nvim"
+        local is_root = is_sudoedit or uid == 0
+        return is_root
+      end
     },
+    -- Check for a specific file in the directory
+    {
+      path = "~/projects/",
+      colorscheme = "nord",
+      condition = function(cwd)
+        return vim.fn.filereadable(cwd .. "/.use-nord-theme") == 1
+      end
+    },
+    -- Use a specific theme for JSON, Conf, and Config files
+    {
+      colorscheme = "onedark",
+      condition = function()
+        return vim.bo.filetype == "json" or vim.bo.filetype == "conf" or vim.bo.filetype == "config"
+      end
+    },
+    -- Use different theme during day/night hours
+    {
+      colorscheme = "gruvbox",
+      condition = function()
+        local hour = tonumber(os.date("%H"))
+        return hour >= 20 or hour < 6
+      end
+    },
+
   },
 })
 ```
@@ -228,18 +232,18 @@ local is_sudoedit = vim.env.SUDOEDIT == "1" -- This requires your shell's config
 local is_root = is_sudoedit or uid == 0
 
 require("color-chameleon").setup({
-  camouflage = {
-    enabled = true,
-    rules = {
-      -- Red theme for root/elevated contexts
-      { colorscheme = "oasis-sol", condition = function() return is_root end },
-      -- Different theme for remote sessions
-      { colorscheme = "oasis-dune", condition = function() return is_remote end },
-      -- Mounted filesystems
-      { path = "~/mnt/", colorscheme = "oasis-mirage" },
-    },
-    fallback = "oasis", -- Default theme for normal contexts
+  enabled = true,
+  rules = {
+    -- Theme for root/elevated AND working remote contexts
+    { colorscheme = "oasis-abyss", condition = function() return is_root and is_remote end },
+    -- Theme for root/elevated contexts
+    { colorscheme = "oasis-sol", condition = function() return is_root end },
+    -- Theme for remote sessions
+    { colorscheme = "oasis-dune", condition = function() return is_remote end },
+    -- Theme for mounted filesystems
+    { path = "~/mnt/", colorscheme = "oasis-mirage" },
   },
+  fallback = "oasis", -- Default theme for normal contexts
 })
 ```
 
@@ -294,23 +298,23 @@ Refer to [configuration](-configuration) below on how to disable or customize.
 
 ### 🍦 Default Options
 
+> Note: All options are top-level. Earlier versions of this README showed a nested `camouflage = { ... }`; that was incorrect and would leave the plugin disabled. Use the shape below.
+
 ```lua
 require("color-chameleon").setup({
-  camouflage = {
-    enabled = false,  -- Set to true to enable automatic switching
-    rules = {},       -- Array of rule tables (see examples above)
-    fallback = nil,   -- Colorscheme when no rules match (nil = restore previous)
-    keymaps = true,   -- Set to false to disable, or pass a table to customize:
-    -- keymaps = {
-    --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
-    --   keymaps = {                 -- Override individual keys
-    --     enable = "<leader>Ce",
-    --     disable = "<leader>Cd",
-    --     env = "<leader>Cv",
-    --     status = "<leader>Cs",
-    --   },
-    -- },
-    },
+  enabled = false,  -- Set to true to enable automatic switching
+  rules = {},       -- Array of rule tables (see examples above)
+  fallback = nil,   -- Colorscheme when no rules match (nil = restore previous)
+  keymaps = true,   -- Set to false to disable, or pass a table to customize:
+  -- keymaps = {
+  --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
+  --   keymaps = {                 -- Override individual keys
+  --     enable = "<leader>Ce",
+  --     disable = "<leader>Cd",
+  --     env = "<leader>Cv",
+  --     status = "<leader>Cs",
+  --   },
+  -- },
 })
 ```
 
