@@ -4,7 +4,6 @@
     width="auto" height="128" alt="logo" />
 </p>
 <h1 align="center">color-chameleon.nvim</h1>
-<hr/>
 <p align="center">
   <a href="https://github.com/uhs-robert/color-chameleon.nvim/stargazers"><img src="https://img.shields.io/github/stars/uhs-robert/color-chameleon.nvim?colorA=192330&colorB=khaki&style=for-the-badge&cacheSeconds=4300"></a>
   <a href="https://github.com/uhs-robert/color-chameleon.nvim/issues"><img src="https://img.shields.io/github/issues/uhs-robert/color-chameleon.nvim?colorA=192330&colorB=skyblue&style=for-the-badge&cacheSeconds=4300"></a>
