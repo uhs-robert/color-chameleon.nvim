@@ -1,4 +1,4 @@
--- config.lua
+-- lua/color-chameleon/config.lua
 
 local Config = {}
 local deepcopy = vim.deepcopy
@@ -6,6 +6,14 @@ local deepcopy = vim.deepcopy
 -- Default configuration
 -- stylua: ignore start
 Config.defaults = {
+  enabled = false, -- Set to true to enable automatic colorscheme switching
+  rules = {
+    -- Example rule:
+    -- { path = "~/mnt/", colorscheme = "gruvbox" },
+    -- { path = "~/work/", colorscheme = "tokyonight", env = { TMUX = true } },
+    -- { colorscheme = "catppuccin", env = { SSH_CONNECTION = true } },
+  },
+  fallback = nil, -- Colorscheme to use when no rules match (nil = restore previous)
 }
 -- stylua: ignore end
 
