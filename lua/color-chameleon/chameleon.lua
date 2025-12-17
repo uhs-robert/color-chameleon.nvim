@@ -59,7 +59,7 @@ function Chameleon.get_status()
 	local current_colorscheme = vim.g.colors_name or "none"
 
 	local lines = {
-		"Color Chameleon Status:",
+		"Color Chameleon Status",
 		"",
 		"Current colorscheme: " .. current_colorscheme,
 	}
