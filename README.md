@@ -277,6 +277,19 @@ chameleon.env()
 <!-- lua-api:end -->
 </details>
 
+### 🎹 Keymapping
+
+Default keybindings, when enabled, under <leader>C (fully customizable):
+
+| Keymap       | Command             | Description                |
+| ------------ | ------------------- | -------------------------- |
+| `<leader>Ce` | `:ChameleonEnable`  | Enable camouflage mode     |
+| `<leader>Cd` | `:ChameleonDisable` | Disable camouflage mode    |
+| `<leader>Cv` | `:ChameleonEnv`     | Show environment variables |
+| `<leader>Cs` | `:ChameleonStatus`  | Show chameleon status      |
+
+Refer to [configuration](-configuration) below on how to disable or customize.
+
 ## ⚙️ Configuration
 
 ### Default Options
@@ -287,7 +300,17 @@ require("color-chameleon").setup({
     enabled = false,  -- Set to true to enable automatic switching
     rules = {},       -- Array of rule tables (see examples above)
     fallback = nil,   -- Colorscheme when no rules match (nil = restore previous)
-  },
+    keymaps = true,   -- Set to false to disable, or pass a table to customize:
+    -- keymaps = {
+    --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
+    --   keymaps = {                 -- Override individual keys
+    --     enable = "<leader>Ce",
+    --     disable = "<leader>Cd",
+    --     env = "<leader>Cv",
+    --     status = "<leader>Cs",
+    --   },
+    -- },
+    },
 })
 ```
 

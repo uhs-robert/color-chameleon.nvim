@@ -14,6 +14,16 @@ Config.defaults = {
     -- { colorscheme = "catppuccin", env = { SSH_CONNECTION = true } },
   },
   fallback = nil, -- Colorscheme to use when no rules match (nil = restore previous)
+  keymaps = true, -- Set to false to disable, or pass a table to customize:
+  -- keymaps = {
+  --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
+  --   keymaps = {                 -- Override individual keys
+  --     enable = "<leader>Ce",
+  --     disable = "<leader>Cd",
+  --     env = "<leader>Cv",
+  --     status = "<leader>Cs",
+  --   },
+  -- },
 }
 -- stylua: ignore end
 
