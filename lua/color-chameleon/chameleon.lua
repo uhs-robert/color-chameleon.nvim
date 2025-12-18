@@ -86,18 +86,38 @@ function Chameleon.get_status()
 
 	if config and config.enabled then
 		table.insert(lines, "Camouflage: enabled")
+
+		-- Show active rule if any
+		if CAMO.active_rule then
+			table.insert(lines, "Active rule: matching")
+			table.insert(lines, "  Previous colorscheme: " .. (CAMO.prev_colorscheme or "none"))
+		else
+			table.insert(lines, "Active rule: none")
+		end
+
 		table.insert(lines, "")
 		table.insert(lines, "Rules:")
 		for i, rule in ipairs(config.rules or {}) do
-			local rule_desc = string.format("  %d. ", i)
+			local is_active = rule == CAMO.active_rule
+			local prefix = is_active and "  ✓ " or "    "
+			local rule_desc = string.format("%s%d. ", prefix, i)
+
 			if rule.path then
 				rule_desc = rule_desc .. "path=" .. rule.path .. " "
 			end
 			if rule.env then
 				rule_desc = rule_desc .. "env=" .. vim.inspect(rule.env) .. " "
 			end
+			if rule.condition then
+				rule_desc = rule_desc .. "condition=<function> "
+			end
 			rule_desc = rule_desc .. "→ " .. rule.colorscheme
 			table.insert(lines, rule_desc)
+		end
+
+		if config.fallback then
+			table.insert(lines, "")
+			table.insert(lines, "Fallback: " .. config.fallback)
 		end
 	else
 		table.insert(lines, "Camouflage: disabled")
