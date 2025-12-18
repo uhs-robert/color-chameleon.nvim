@@ -41,7 +41,7 @@ function AutoCommands.setup()
 
 	-- Setup autocmd
 	local Chameleon = require("color-chameleon.chameleon")
-	vim.api.nvim_create_autocmd({ "DirChanged", "BufEnter" }, {
+	vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged", "BufEnter" }, {
 		group = AUGROUP_ID,
 		callback = function()
 			local current_config = require("color-chameleon.config").get()
@@ -50,8 +50,10 @@ function AutoCommands.setup()
 		desc = "Update colorscheme based on directory rules",
 	})
 
-	-- Check on startup
-	Chameleon.scan_surroundings(config)
+	-- Check immediately if not during startup
+	if vim.v.vim_did_enter == 1 then
+		Chameleon.scan_surroundings(config)
+	end
 end
 
 --- Teardown the autocommands
