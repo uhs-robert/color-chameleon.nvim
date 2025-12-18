@@ -11,16 +11,19 @@
   <a href="https://github.com/uhs-robert/color-chameleon.nvim/network/members"><img src="https://img.shields.io/github/forks/uhs-robert/color-chameleon.nvim?colorA=192330&colorB=C799FF&style=for-the-badge&cacheSeconds=4300"></a>
 </p>
 <p align="center">
-Automatically <strong>adapt your colorscheme</strong> to your environment, just <strong>like a chameleon</strong>.
+  Dynamically <strong>adapt your skin</strong> to the environment you're in, <strong>like a chameleon</strong>.
 </p>
+
+> [!WARNING]
+> Still under construction. Almost done though. Ready to release on December 19th 2025.
 
 ## 🦎 Overview
 
-**color-chameleon.nvim** lets you set rules for when a colorscheme should be applied.
+**color-chameleon.nvim** lets you set conditional rules for when a colorscheme should be applied.
 
-Applies colorschemes based on variables such as working directory, environment, buffer properties (filetype/buftype), custom conditions, and/or combinations of each.
+These rules are evaluated in order from top-to-bottom on `VimEnter`, `DirectoryChange`, and `BufEnter`; the first matching rule wins.
 
-Dynamically adapt your skin to the environment you're in and switch back automatically too.
+This allows you to dynamically apply colorschemes based on any condition, the only limit is your imagination.
 
 <details>
 <summary>✨ What's New / 🚨 Breaking Changes</summary>
@@ -47,7 +50,7 @@ Dynamically adapt your skin to the environment you're in and switch back automat
   - Working directory (local vs remote/mounted filesystems)
   - Environment variables (SSH sessions, sudo, TMUX, custom vars)
   - Buffer properties (filetype, buffer type)
-  - Custom conditions (any logic you can write)
+  - Custom functions/conditions (any logic you can write)
 - **Flexible Logic**: Combine conditions with AND logic, use arrays for OR logic
 - **Smart Switching**: Preserves your previous colorscheme when leaving special contexts
 - **Buffer-Aware**: Considers both global working directory and individual buffer paths
@@ -119,9 +122,9 @@ Refer to [Usage](#-usage) below for examples of each and [Use Cases](#-use-cases
 
 ## 🚀 Usage
 
-This plugin expects you to be strategic and creative. You'll have to write your own rules.
+The power is in your hands; create rules that match your unique workflow.
 
-Here are some examples to help get you started, think of this section as your tutorial.
+Below are practical examples organized from simple to advanced. Start with the basics, then explore the combinations that fit your needs.
 
 ### 🖌️ Basic Configuration
 
@@ -462,7 +465,7 @@ require("color-chameleon").setup({
 
 ## 💼 Use Cases
 
-You might already have an idea from the examples above but here are some use cases that I like to use personally:
+Real-world scenarios to inspire your workflow:
 
 ### 📡 Distinguish Local vs Remote Work
 
