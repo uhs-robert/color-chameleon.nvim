@@ -53,6 +53,27 @@ end
 function Config.setup(user_config)
 	user_config = user_config or {}
 	Config.options = deep_merge(Config.defaults, user_config)
+
+	local errors = {}
+	local Validate = require("color-chameleon.lib.validate")
+
+	-- Validate fallback type
+	if Config.options.fallback and type(Config.options.fallback) ~= "string" then
+		table.insert(errors, "Fallback must be a string or nil")
+	end
+
+	-- Validate rules structure
+	local rules_valid, rule_errors = Validate.all_rules(Config.options.rules or {})
+	if not rules_valid then
+		vim.list_extend(errors, rule_errors)
+	end
+
+	if #errors > 0 then
+		vim.notify(
+			"ColorChameleon: Configuration validation failed:\n" .. table.concat(errors, "\n"),
+			vim.log.levels.ERROR
+		)
+	end
 end
 
 --- Enable ColorChameleon
