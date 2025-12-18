@@ -18,7 +18,7 @@ Automatically <strong>adapt your colorscheme</strong> to your environment, just 
 
 **color-chameleon.nvim** lets you set rules for when a colorscheme should be applied. First matching rule wins!
 
-Set colorschemes for projects, environment variables, custom conditions, and/or combinations of each.
+Set colorschemes for projects, environment variables, buffer properties (filetype/buftype), custom conditions, and/or combinations of each.
 
 Dynamically adapt your skin to the environment you're in and switch back automatically too.
 
@@ -46,6 +46,7 @@ Dynamically adapt your skin to the environment you're in and switch back automat
 - **Context-Aware Colorschemes**: Automatically switch colorschemes based on:
   - Working directory (local vs remote/mounted filesystems)
   - Environment variables (SSH sessions, sudo, TMUX, custom vars)
+  - Buffer properties (filetype, buffer type)
   - Custom conditions (any logic you can write)
 - **Smart Switching**: Preserves your previous colorscheme when leaving special contexts
 - **Buffer-Aware**: Considers both global working directory and individual buffer paths
@@ -91,9 +92,13 @@ use {
 
 ## 🚀 Usage
 
+This plugin gives you the freedom to create your own rules for when to apply a colorscheme. This requires you to be both strategic and creative.
+
+We'll start first with a basic example then gradually add complexity.
+
 ### 🖌️ Basic Configuration
 
-Enable automatic colorscheme switching for mounted filesystems:
+Switch theme when in a mount directory:
 
 ```lua
 require("color-chameleon").setup({
@@ -119,7 +124,7 @@ require("color-chameleon").setup({
   rules = {
     { path = "~/work/", colorscheme = "tokyonight" },
     { path = "~/personal/", colorscheme = "catppuccin" },
-    { path = "~/mnt/", colorscheme = "oasis" },
+    { path = "~/mnt/", colorscheme = "oasis-mirage" },
   },
 })
 ```
@@ -138,12 +143,9 @@ Change themes based on any `vim.env` variables. These are ENV variables from you
 require("color-chameleon").setup({
   enabled = true,
   rules = {
-    -- Use gruvbox when in an SSH session
-    { colorscheme = "gruvbox", env = { SSH_CONNECTION = true } },
-    -- Use tokyonight when in TMUX
-    { colorscheme = "tokyonight", env = { TMUX = true } },
-    -- Combine path and environment
-    { path = "~/work/", colorscheme = "catppuccin", env = { WORK_ENV = "production" } },
+    { colorscheme = "gruvbox", env = { SSH_CONNECTION = true } }, -- Applies when in an SSH session
+    { colorscheme = "tokyonight", env = { TMUX = true } }, -- Applies when in TMUX
+    { path = "~/work/", colorscheme = "catppuccin", env = { WORK_ENV = "production" } }, -- Applies when path AND env are both true
   },
 })
 ```
@@ -164,6 +166,55 @@ rules = {
 ```
 
 <!-- environment-switching:end -->
+</details>
+
+<details>
+<summary>📄 Buffer Properties (Filetype & Buftype)</summary>
+<br>
+<!-- buffer-properties:start -->
+
+Match rules based on buffer properties like filetype or buffer type:
+
+```lua
+require("color-chameleon").setup({
+  enabled = true,
+  rules = {
+    -- Simple filetype matching
+    { filetype = "markdown", colorscheme = "nord" },
+    { filetype = "python", colorscheme = "gruvbox" },
+
+    -- Buffer type matching
+    { buftype = "terminal", colorscheme = "tokyonight" },
+    { buftype = "help", colorscheme = "catppuccin" },
+
+    -- Combine path + filetype (both must match)
+    {
+      path = "~/notes/",
+      filetype = "markdown",
+      colorscheme = "nord"
+    },
+
+    -- Combine path + buftype
+    {
+      path = "~/work/",
+      buftype = "terminal",
+      colorscheme = "gruvbox"
+    },
+  },
+})
+```
+
+**Common filetypes**: `markdown`, `python`, `lua`, `javascript`, `typescript`, `rust`, `go`, etc.
+
+**Common buftypes**:
+
+- `""` (empty string) - Normal file buffers
+- `"terminal"` - Terminal buffers
+- `"help"` - Help documentation
+- `"quickfix"` - Quickfix/location lists
+- `"nofile"` - Scratch buffers
+
+<!-- buffer-properties:end -->
 </details>
 
 <details>
@@ -196,16 +247,14 @@ require("color-chameleon").setup({
 })
 ```
 
-For more advanced examples, see the [Use Cases](#-use-cases) section below.
-
 <!-- custom-conditions:end -->
 </details>
 
 <details>
-<summary>🤞 Combine Multiple Contexts</summary>
+<summary>🤞 Combine It All</summary>
 <br>
 <!-- multiple-contexts:start -->
- Switch themes based on whether you're root, remote, or doing a sudoedit with your own custom logic:
+Combine multiple conditions for powerful context-aware theming. All conditions in a rule must match (AND logic):
 
 ```lua
 local is_remote = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_TTY ~= nil
@@ -216,14 +265,31 @@ local is_root = is_sudoedit or uid == 0
 require("color-chameleon").setup({
   enabled = true,
   rules = {
-    -- Theme for root/elevated AND working remote contexts
+     -- Custom conditions for root/remote contexts
     { colorscheme = "oasis-abyss", condition = function() return is_root and is_remote end },
-    -- Theme for root/elevated contexts
     { colorscheme = "oasis-sol", condition = function() return is_root end },
-    -- Theme for remote sessions
     { colorscheme = "oasis-dune", condition = function() return is_remote end },
-    -- Theme for mounted filesystems
     { path = "~/mnt/", colorscheme = "oasis-mirage" },
+
+    -- Combine path + environment
+    { path = "~/work/", env = { NODE_ENV = "production" }, colorscheme = "tokyonight" },
+
+    -- Combine path + filetype
+    { path = "~/notes/", filetype = "markdown", colorscheme = "catppuccin" },
+
+    -- ALL conditions combined: path + env + filetype + buftype + custom function
+    -- This rule only matches when ALL of these are true:
+    {
+      path = "~/projects/sensitive/",           -- In sensitive projects directory
+      env = { SSH_CONNECTION = true },          -- AND in an SSH session
+      filetype = "lua",                         -- AND editing a Lua file
+      buftype = "",                             -- AND it's a normal file (not terminal/help/etc)
+      condition = function(cwd)                 -- AND a .secure marker file exists
+        return vim.fn.filereadable(cwd .. "/.secure") == 1
+      end,
+      colorscheme = "gruvbox"
+    },
+
   },
   fallback = "oasis", -- Default theme for normal contexts
 })
@@ -231,6 +297,9 @@ require("color-chameleon").setup({
 
 <!-- multiple-contexts:end -->
 </details>
+
+> [!TIP]
+> For even more use case examples, see the [Use Cases](#-use-cases) section below.
 
 ### 🔧 API Commands
 
@@ -328,11 +397,15 @@ Each rule can have the following fields:
     - `true` = check if variable exists
     - `false` = check if variable doesn't exist
     - string = check if variable equals this exact value
+- `filetype` (string, optional): Buffer filetype to match (e.g., `"markdown"`, `"python"`, `"lua"`).
+- `buftype` (string, optional): Buffer type to match (e.g., `"terminal"`, `"help"`, `"quickfix"`, `""` for normal files).
 - `condition` (function, optional): Custom function that receives the current working directory and returns a boolean.
 
 > [!IMPORTANT]
 >
 > Rules are evaluated in order. The first matching rule wins.
+>
+> **All conditions in a rule must match** (AND logic). For example, a rule with both `path` and `filetype` will only match if the current directory matches the path AND the buffer filetype matches.
 
 ## 💼 Use Cases
 
@@ -455,6 +528,12 @@ Apply specific themes for configuration files or special filetypes:
 
 ```lua
 rules = {
+  -- Simple filetype matching
+  { filetype = "json", colorscheme = "onedark" },
+  { filetype = "yaml", colorscheme = "onedark" },
+  { filetype = "toml", colorscheme = "onedark" },
+
+  -- Or use a condition for multiple filetypes
   {
     colorscheme = "onedark",
     condition = function()
@@ -494,17 +573,21 @@ Switch themes when working with terminal buffers (or any buffer type):
 
 ```lua
 rules = {
+  -- Simple buffer type matching
+  { buftype = "terminal", colorscheme = "tokyonight" },
+
+  -- Combine with path for project-specific terminal themes
   {
-    colorscheme = "tokyonight",
-    condition = function()
-      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
-          return true
-        end
-      end
-      return false
-    end
+    path = "~/work/",
+    buftype = "terminal",
+    colorscheme = "gruvbox"
   },
+
+  -- Help buffers
+  { buftype = "help", colorscheme = "nord" },
+
+  -- Normal file buffers only (exclude special buffers)
+  { buftype = "", colorscheme = "catppuccin" },
 }
 ```
 

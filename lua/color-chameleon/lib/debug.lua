@@ -36,6 +36,12 @@ function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir)
 	if rule.env then
 		table.insert(parts, string.format("  env: %s", vim.inspect(rule.env)))
 	end
+	if rule.filetype then
+		table.insert(parts, string.format("  filetype: %s (current: %s)", rule.filetype, vim.bo.filetype))
+	end
+	if rule.buftype then
+		table.insert(parts, string.format("  buftype: %s (current: %s)", rule.buftype, vim.bo.buftype))
+	end
 	if rule.condition then
 		table.insert(parts, "  condition: <function>")
 	end
@@ -91,6 +97,12 @@ function Debug.test_rules()
 		end
 		if matching_rule.env then
 			table.insert(lines, "  Env: " .. vim.inspect(matching_rule.env))
+		end
+		if matching_rule.filetype then
+			table.insert(lines, "  Filetype: " .. matching_rule.filetype)
+		end
+		if matching_rule.buftype then
+			table.insert(lines, "  Buftype: " .. matching_rule.buftype)
 		end
 		if matching_rule.condition then
 			table.insert(lines, "  Condition: <function>")

@@ -47,6 +47,14 @@ function Validate.rule(rule, index)
 		return false, string.format("Rule %d: 'condition' must be a function", index)
 	end
 
+	if rule.filetype and type(rule.filetype) ~= "string" then
+		return false, string.format("Rule %d: 'filetype' must be a string", index)
+	end
+
+	if rule.buftype and type(rule.buftype) ~= "string" then
+		return false, string.format("Rule %d: 'buftype' must be a string", index)
+	end
+
 	return true, nil
 end
 

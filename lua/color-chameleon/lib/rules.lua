@@ -66,6 +66,32 @@ local function custom_condition_matches(condition, current_dir)
 	return success and result
 end
 
+--- Check if buffer property matches
+---@param rule_value string|nil Expected buffer property value
+---@param actual_value string Actual buffer property value
+---@return boolean
+local function buffer_property_matches(rule_value, actual_value)
+	if not rule_value then
+		return true
+	end
+	return rule_value == actual_value
+end
+
+--- Check if all buffer conditions match
+---@param rule table
+---@return boolean
+local function check_buffer_conditions(rule)
+	if not rule.filetype and not rule.buftype then
+		return true
+	end
+
+	local current_filetype = vim.bo.filetype
+	local current_buftype = vim.bo.buftype
+
+	return buffer_property_matches(rule.filetype, current_filetype)
+		and buffer_property_matches(rule.buftype, current_buftype)
+end
+
 --- Check if a rule matches all conditions
 ---@param rule table
 ---@param current_dir string
@@ -74,6 +100,7 @@ local function rule_matches(rule, current_dir)
 	return path_matches(rule.path, current_dir)
 		and check_env_conditions(rule.env)
 		and custom_condition_matches(rule.condition, current_dir)
+		and check_buffer_conditions(rule)
 end
 
 --- Find matching rule for current working directory
