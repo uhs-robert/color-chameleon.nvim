@@ -24,12 +24,10 @@ end
 function AutoCommands.setup()
 	local config = require("color-chameleon.config").get()
 
-	-- Check if enabled
 	if not config or not config.enabled then
 		return
 	end
 
-	-- Validate configuration
 	if not config.rules or #config.rules == 0 then
 		vim.notify("color-chameleon: No rules configured", vim.log.levels.WARN)
 		return

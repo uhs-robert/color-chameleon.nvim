@@ -13,32 +13,42 @@ local function format_value(value)
 	return tostring(value)
 end
 
---- Log a debug message if debug mode is enabled
+--- Log a debug message to the provided messages table
+---@param messages table|nil Array to collect messages (if nil, message is ignored)
 ---@param message string The message to log
----@param level? number The log level (default: INFO)
-function Debug.log(message, level)
+function Debug.log(messages, message)
+	if not messages then
+		return
+	end
+	table.insert(messages, message)
+end
+
+--- Flush collected debug messages as a single notification
+---@param messages table Array of messages to flush
+function Debug.flush(messages)
+	if not messages or #messages == 0 then
+		return
+	end
+
 	local config = require("color-chameleon.config").get()
 	if not config or not config.debug then
 		return
 	end
 
-	level = level or vim.log.levels.INFO
-	vim.notify("[ColorChameleon] " .. message, level)
+	vim.notify(table.concat(messages, "\n"), vim.log.levels.INFO, { title = "ColorChameleon" })
 end
 
 --- Log rule evaluation details
+---@param messages table|nil Array to collect messages (if nil, logging is skipped)
 ---@param rule table The rule being evaluated
 ---@param rule_index number The rule index
 ---@param matched boolean Whether the rule matched
 ---@param current_dir string The current directory
----@param bufnr number|nil Buffer number being checked
-function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir, bufnr)
-	local config = require("color-chameleon.config").get()
-	if not config or not config.debug then
+---@param bufnr number Buffer number being checked
+function Debug.log_rule_evaluation(messages, rule, rule_index, matched, current_dir, bufnr)
+	if not messages then
 		return
 	end
-
-	bufnr = bufnr or vim.api.nvim_get_current_buf()
 
 	local status = matched and "✓ MATCHED" or "✗ No match"
 	local parts = { string.format("Rule %d: %s", rule_index, status) }
@@ -50,10 +60,16 @@ function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir, bufnr
 		table.insert(parts, string.format("  env: %s", vim.inspect(rule.env)))
 	end
 	if rule.filetype then
-		table.insert(parts, string.format("  filetype: %s (current: %s)", format_value(rule.filetype), vim.bo[bufnr].filetype))
+		table.insert(
+			parts,
+			string.format("  filetype: %s (current: %s)", format_value(rule.filetype), vim.bo[bufnr].filetype)
+		)
 	end
 	if rule.buftype then
-		table.insert(parts, string.format("  buftype: %s (current: %s)", format_value(rule.buftype), vim.bo[bufnr].buftype))
+		table.insert(
+			parts,
+			string.format("  buftype: %s (current: %s)", format_value(rule.buftype), vim.bo[bufnr].buftype)
+		)
 	end
 	if rule.condition then
 		table.insert(parts, "  condition: <function>")
@@ -61,31 +77,31 @@ function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir, bufnr
 	table.insert(parts, string.format("  colorscheme: %s", rule.colorscheme))
 	table.insert(parts, string.format("  current_dir: %s", current_dir))
 
-	Debug.log(table.concat(parts, "\n"))
+	for _, line in ipairs(parts) do
+		table.insert(messages, line)
+	end
 end
 
 --- Log colorscheme change
+---@param messages table|nil Array to collect messages (if nil, logging is skipped)
 ---@param from string|nil Previous colorscheme
 ---@param to string New colorscheme
 ---@param reason string Reason for the change
-function Debug.log_colorscheme_change(from, to, reason)
-	local config = require("color-chameleon.config").get()
-	if not config or not config.debug then
+function Debug.log_colorscheme_change(messages, from, to, reason)
+	if not messages then
 		return
 	end
-
 	local message = string.format("Colorscheme: %s → %s (%s)", from or "none", to, reason)
-	Debug.log(message)
+	Debug.log(messages, message)
 end
 
 --- Get inspection report for current buffer and rule matching
 ---@return table lines Array of formatted status lines
 function Debug.get_inspection_report()
-	local Config = require("color-chameleon.config")
 	local Rules = require("color-chameleon.lib.rules")
 	local Directory = require("color-chameleon.lib.directory")
+	local config = require("color-chameleon.config").get()
 
-	local config = Config.get()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local win = vim.api.nvim_get_current_win()
 	local win_config = vim.api.nvim_win_get_config(win)

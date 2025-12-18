@@ -139,32 +139,33 @@ end
 --- Find matching rule for current working directory
 ---@param rules table[]
 ---@param bufnr number|nil Buffer number to check (defaults to current buffer)
+---@param messages table|nil Debug messages array (if nil, no logging)
 ---@return table|nil
-function Rules.find_matching(rules, bufnr)
+function Rules.find_matching(rules, bufnr, messages)
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 
 	local Directory = require("color-chameleon.lib.directory")
 	local Debug = require("color-chameleon.lib.debug")
 	local current_dir = Directory.get_effective()
 	if not current_dir then
-		Debug.log("Unable to determine current directory")
+		Debug.log(messages, "Unable to determine current directory")
 		return nil
 	end
 
 	local current_buftype = vim.bo[bufnr].buftype
-	Debug.log(string.format("Evaluating %d rules for directory: %s (bufnr: %d, buftype: %s)", #rules, current_dir, bufnr, current_buftype))
+	Debug.log(messages, string.format("Evaluating %d rules for directory: %s (bufnr: %d, buftype: %s)", #rules, current_dir, bufnr, current_buftype))
 
 	for i, rule in ipairs(rules) do
 		local matched = rule_matches(rule, current_dir, bufnr)
-		Debug.log_rule_evaluation(rule, i, matched, current_dir, bufnr)
+		Debug.log_rule_evaluation(messages, rule, i, matched, current_dir, bufnr)
 
 		if matched then
-			Debug.log(string.format("✓ Rule %d matched, applying colorscheme: %s", i, rule.colorscheme))
+			Debug.log(messages, string.format("✓ Rule %d matched, applying colorscheme: %s", i, rule.colorscheme))
 			return rule
 		end
 	end
 
-	Debug.log("No matching rules found")
+	Debug.log(messages, "No matching rules found")
 	return nil
 end
 

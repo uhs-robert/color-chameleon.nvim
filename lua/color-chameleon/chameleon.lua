@@ -63,6 +63,7 @@ function Chameleon.scan_surroundings(config, bufnr)
 	if not config or not config.enabled then
 		return
 	end
+	local debug_messages = config.debug and {} or nil
 
 	-- Skip floating windows immediately to avoid infinite loops from debug notifications
 	local win = vim.api.nvim_get_current_win()
@@ -75,9 +76,10 @@ function Chameleon.scan_surroundings(config, bufnr)
 	local Buffer = require("color-chameleon.lib.buffer")
 	local should_skip, skip_reason = Buffer.should_skip(config.rules, bufnr)
 	if should_skip then
-		if skip_reason then
+		if skip_reason and debug_messages then
 			local Debug = require("color-chameleon.lib.debug")
-			Debug.log(string.format("Skipping: %s", skip_reason))
+			Debug.log(debug_messages, string.format("Skipping: %s", skip_reason))
+			Debug.flush(debug_messages)
 		end
 		return
 	end
@@ -88,8 +90,14 @@ function Chameleon.scan_surroundings(config, bufnr)
 	end
 
 	local Rules = require("color-chameleon.lib.rules")
-	local matching_rule = Rules.find_matching(config.rules, bufnr)
+	local matching_rule = Rules.find_matching(config.rules, bufnr, debug_messages)
 	blend_in(matching_rule, config.fallback)
+
+	-- Flush debug messages at the end of evaluation
+	if debug_messages then
+		local Debug = require("color-chameleon.lib.debug")
+		Debug.flush(debug_messages)
+	end
 end
 
 --- Get status information for ColorChameleon

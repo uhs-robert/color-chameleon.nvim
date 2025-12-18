@@ -25,8 +25,6 @@ These rules are evaluated in order from top-to-bottom; the first matching rule w
 
 Rules are evaluated on `VimEnter`, `DirChanged`, `BufReadPost`, `BufNewFile`, `BufEnter`, and `TermOpen` events.
 
-This allows you to dynamically apply colorschemes based on any condition, the only limit is your imagination.
-
 <details>
 <summary>✨ What's New / 🚨 Breaking Changes</summary>
 <br/>
@@ -218,8 +216,8 @@ require("color-chameleon").setup({
     { filetype = "python", colorscheme = "gruvbox" },
 
     -- Buffer type matching
+    -- NOTE: buffers which open a split like "help" are ignored
     { buftype = "terminal", colorscheme = "tokyonight" },
-    { buftype = "help", colorscheme = "catppuccin" },
 
     -- Combine path + filetype (both must match)
     {
@@ -247,6 +245,8 @@ require("color-chameleon").setup({
 - `"help"` - Help documentation
 - `"quickfix"` - Quickfix/location lists
 - `"nofile"` - Scratch buffers
+
+Refer to [buftype](https://neovim.io/doc/user/options.html#'buftype') for all.
 
 <!-- buffer-properties:end -->
 </details>

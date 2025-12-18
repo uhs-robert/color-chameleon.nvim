@@ -10,9 +10,7 @@ local function is_real_file(bufnr)
 	local bo = vim.bo[bufnr]
 	local bufname = vim.api.nvim_buf_get_name(bufnr)
 
-	-- Skip buffers with empty names. They're either:
-	-- UI buffers being set up (netrw, explorers) before properties are set
-	-- Or new unsaved buffers (will be evaluated later when actually edited)
+	-- Skip buffers with empty names. They're either: UI buffers (netrw, explorers) or new unsaved buffers (evaluated on edit)
 	if bufname == "" then
 		return false
 	end
