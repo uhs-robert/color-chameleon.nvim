@@ -240,6 +240,7 @@ Color Chameleon provides the following commands:
 - `:ChameleonEnable` - Enable camouflage mode
 - `:ChameleonDisable` - Disable camouflage mode
 - `:ChameleonEnv` - Show your current `vim.env` variables
+- `:ChameleonDebug` - Toggle debug mode
 
 <details>
 <summary>Lua API</summary>
@@ -258,6 +259,10 @@ chameleon.status()
 
 -- List environment variables
 chameleon.env()
+
+
+-- Toggle debug mode
+chameleon.debug()
 ```
 
 <!-- lua-api:end -->
@@ -273,6 +278,7 @@ Default keybindings, when enabled, under <leader>C (fully customizable):
 | `<leader>Cd` | `:ChameleonDisable` | Disable camouflage mode    |
 | `<leader>Cv` | `:ChameleonEnv`     | Show environment variables |
 | `<leader>Cs` | `:ChameleonStatus`  | Show chameleon status      |
+| `<leader>CD` | `:ChameleonDebug`   | Toggle debug mode          |
 
 Refer to [configuration](-configuration) below on how to disable or customize.
 
@@ -283,6 +289,7 @@ Refer to [configuration](-configuration) below on how to disable or customize.
 ```lua
 require("color-chameleon").setup({
   enabled = false,  -- Set to true to enable automatic switching
+  debug = false,    -- Set to true to enable debug logging
   rules = {},       -- Array of rule tables (see examples above)
   fallback = nil,   -- Colorscheme when no rules match (nil = restore previous)
   keymaps = true,   -- Set to false to disable, or pass a table to customize:
@@ -293,6 +300,7 @@ require("color-chameleon").setup({
   --     disable = "<leader>Cd",
   --     env = "<leader>Cv",
   --     status = "<leader>Cs",
+  --     debug = "<leader>CD",
   --   },
   -- },
 })

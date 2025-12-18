@@ -7,6 +7,7 @@ local deepcopy = vim.deepcopy
 -- stylua: ignore start
 Config.defaults = {
   enabled = false, -- Set to true to enable automatic colorscheme switching
+  debug = false, -- Set to true to enable debug logging
   rules = {
     -- Example rule:
     -- { path = "~/mnt/", colorscheme = "gruvbox" },
@@ -22,6 +23,7 @@ Config.defaults = {
   --     disable = "<leader>Cd",
   --     env = "<leader>Cv",
   --     status = "<leader>Cs",
+  --     debug = "<leader>CD",
   --   },
   -- },
 }
