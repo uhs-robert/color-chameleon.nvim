@@ -34,23 +34,42 @@ local function check_env_conditions(env_conditions)
 	return true
 end
 
---- Check if path condition matches
----@param rule_path string|nil
+--- Check if a single path matches the current directory
+---@param single_path string
 ---@param current_dir string
 ---@return boolean
-local function path_matches(rule_path, current_dir)
+local function single_path_matches(single_path, current_dir)
 	local Directory = require("color-chameleon.lib.directory")
-	if not rule_path then
-		return true
-	end
-
-	local resolved_path = Directory.realpath(rule_path)
+	local resolved_path = Directory.realpath(single_path)
 	if not resolved_path then
 		return false
 	end
 
 	-- Exact match or prefix match with directory separator
 	return current_dir == resolved_path or current_dir:sub(1, #resolved_path + 1) == resolved_path .. "/"
+end
+
+--- Check if path condition matches (supports string or array of strings)
+---@param rule_path string|string[]|nil
+---@param current_dir string
+---@return boolean
+local function path_matches(rule_path, current_dir)
+	if not rule_path then
+		return true
+	end
+
+	-- Handle array of paths (OR logic)
+	if type(rule_path) == "table" then
+		for _, path in ipairs(rule_path) do
+			if single_path_matches(path, current_dir) then
+				return true
+			end
+		end
+		return false
+	end
+
+	-- Handle single path
+	return single_path_matches(rule_path, current_dir)
 end
 
 --- Check if custom condition function passes
@@ -66,14 +85,26 @@ local function custom_condition_matches(condition, current_dir)
 	return success and result
 end
 
---- Check if buffer property matches
----@param rule_value string|nil Expected buffer property value
+--- Check if buffer property matches (supports string or array of strings)
+---@param rule_value string|string[]|nil Expected buffer property value(s)
 ---@param actual_value string Actual buffer property value
 ---@return boolean
 local function buffer_property_matches(rule_value, actual_value)
 	if not rule_value then
 		return true
 	end
+
+	-- Handle array of values (OR logic)
+	if type(rule_value) == "table" then
+		for _, value in ipairs(rule_value) do
+			if value == actual_value then
+				return true
+			end
+		end
+		return false
+	end
+
+	-- Handle single value
 	return rule_value == actual_value
 end
 

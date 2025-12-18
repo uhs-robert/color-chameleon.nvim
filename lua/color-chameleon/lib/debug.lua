@@ -3,6 +3,16 @@
 
 local Debug = {}
 
+--- Format a value that can be a string or array
+---@param value string|string[] The value to format
+---@return string formatted The formatted string
+local function format_value(value)
+	if type(value) == "table" then
+		return "[" .. table.concat(value, ", ") .. "]"
+	end
+	return tostring(value)
+end
+
 --- Log a debug message if debug mode is enabled
 ---@param message string The message to log
 ---@param level? number The log level (default: INFO)
@@ -31,16 +41,16 @@ function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir)
 	local parts = { string.format("Rule %d: %s", rule_index, status) }
 
 	if rule.path then
-		table.insert(parts, string.format("  path: %s", rule.path))
+		table.insert(parts, string.format("  path: %s", format_value(rule.path)))
 	end
 	if rule.env then
 		table.insert(parts, string.format("  env: %s", vim.inspect(rule.env)))
 	end
 	if rule.filetype then
-		table.insert(parts, string.format("  filetype: %s (current: %s)", rule.filetype, vim.bo.filetype))
+		table.insert(parts, string.format("  filetype: %s (current: %s)", format_value(rule.filetype), vim.bo.filetype))
 	end
 	if rule.buftype then
-		table.insert(parts, string.format("  buftype: %s (current: %s)", rule.buftype, vim.bo.buftype))
+		table.insert(parts, string.format("  buftype: %s (current: %s)", format_value(rule.buftype), vim.bo.buftype))
 	end
 	if rule.condition then
 		table.insert(parts, "  condition: <function>")
@@ -93,16 +103,16 @@ function Debug.test_rules()
 		table.insert(lines, "✓ MATCHING RULE FOUND:")
 		table.insert(lines, "")
 		if matching_rule.path then
-			table.insert(lines, "  Path: " .. matching_rule.path)
+			table.insert(lines, "  Path: " .. format_value(matching_rule.path))
 		end
 		if matching_rule.env then
 			table.insert(lines, "  Env: " .. vim.inspect(matching_rule.env))
 		end
 		if matching_rule.filetype then
-			table.insert(lines, "  Filetype: " .. matching_rule.filetype)
+			table.insert(lines, "  Filetype: " .. format_value(matching_rule.filetype))
 		end
 		if matching_rule.buftype then
-			table.insert(lines, "  Buftype: " .. matching_rule.buftype)
+			table.insert(lines, "  Buftype: " .. format_value(matching_rule.buftype))
 		end
 		if matching_rule.condition then
 			table.insert(lines, "  Condition: <function>")

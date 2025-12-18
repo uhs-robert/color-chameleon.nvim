@@ -48,6 +48,7 @@ Dynamically adapt your skin to the environment you're in and switch back automat
   - Environment variables (SSH sessions, sudo, TMUX, custom vars)
   - Buffer properties (filetype, buffer type)
   - Custom conditions (any logic you can write)
+- **Flexible Logic**: Combine conditions with AND logic, use arrays for OR logic
 - **Smart Switching**: Preserves your previous colorscheme when leaving special contexts
 - **Buffer-Aware**: Considers both global working directory and individual buffer paths
 - **Zero Configuration**: Works out of the box, but highly customizable
@@ -215,6 +216,52 @@ require("color-chameleon").setup({
 - `"nofile"` - Scratch buffers
 
 <!-- buffer-properties:end -->
+</details>
+
+<details>
+<summary>🔀 OR Logic with Arrays</summary>
+<br>
+<!-- or-logic:start -->
+
+Use arrays to match **any of** multiple values (OR logic). This works for `path`, `filetype`, and `buftype`:
+
+```lua
+require("color-chameleon").setup({
+  enabled = true,
+  rules = {
+    -- Match ANY of these filetypes
+    { filetype = {"json", "yaml", "toml", "xml"}, colorscheme = "nord" },
+
+    -- Match ANY of these paths
+    { path = {"~/work/client-a/", "~/work/client-b/"}, colorscheme = "gruvbox" },
+
+    -- Match ANY of these buffer types
+    { buftype = {"help", "quickfix", "nofile"}, colorscheme = "catppuccin" },
+
+    -- Combine: Match ANY filetype AND a specific path (both conditions must match)
+    {
+      path = "~/notes/",
+      filetype = {"markdown", "text", "org"},
+      colorscheme = "tokyonight"
+    },
+
+    -- Multiple arrays: Match ANY path AND ANY filetype
+    {
+      path = {"~/projects/rust/", "~/projects/go/"},
+      filetype = {"rust", "go"},
+      colorscheme = "gruvbox"
+    },
+  },
+})
+```
+
+**How it works:**
+
+- Arrays within a field use OR logic: match **any** value
+- Multiple fields use AND logic: **all** must match
+- Example: `{ path = ["~/a/", "~/b/"], filetype = ["lua", "vim"] }` matches if you're in `~/a/` OR `~/b/` AND editing `lua` OR `vim`
+
+<!-- or-logic:end -->
 </details>
 
 <details>
@@ -389,7 +436,7 @@ require("color-chameleon").setup({
 
 Each rule can have the following fields:
 
-- `path` (string, optional): Directory path to match. Paths are expanded and symlinks are resolved.
+- `path` (string or array, optional): Directory path(s) to match. Paths are expanded and symlinks are resolved. Use an array to match any of multiple paths.
 - `colorscheme` (string, required): The colorscheme to apply when this rule matches.
 - `env` (table, optional): Environment variable conditions to check.
   - Key: environment variable name
@@ -397,8 +444,8 @@ Each rule can have the following fields:
     - `true` = check if variable exists
     - `false` = check if variable doesn't exist
     - string = check if variable equals this exact value
-- `filetype` (string, optional): Buffer filetype to match (e.g., `"markdown"`, `"python"`, `"lua"`).
-- `buftype` (string, optional): Buffer type to match (e.g., `"terminal"`, `"help"`, `"quickfix"`, `""` for normal files).
+- `filetype` (string or array, optional): Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
+- `buftype` (string or array, optional): Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
 - `condition` (function, optional): Custom function that receives the current working directory and returns a boolean.
 
 > [!IMPORTANT]
@@ -406,6 +453,8 @@ Each rule can have the following fields:
 > Rules are evaluated in order. The first matching rule wins.
 >
 > **All conditions in a rule must match** (AND logic). For example, a rule with both `path` and `filetype` will only match if the current directory matches the path AND the buffer filetype matches.
+>
+> **Arrays within a field use OR logic**. For example, `filetype = {"json", "yaml"}` matches if the filetype is `"json"` OR `"yaml"`.
 
 ## 💼 Use Cases
 
@@ -528,12 +577,16 @@ Apply specific themes for configuration files or special filetypes:
 
 ```lua
 rules = {
-  -- Simple filetype matching
+  -- Match multiple filetypes with an array (recommended)
+  { filetype = {"json", "yaml", "toml", "xml"}, colorscheme = "onedark" },
+
+  -- Or use individual rules
   { filetype = "json", colorscheme = "onedark" },
   { filetype = "yaml", colorscheme = "onedark" },
   { filetype = "toml", colorscheme = "onedark" },
+  { filetype = "xml", colorscheme = "onedark" },
 
-  -- Or use a condition for multiple filetypes
+  -- Or use a condition for complex logic
   {
     colorscheme = "onedark",
     condition = function()
