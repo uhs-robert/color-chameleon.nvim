@@ -21,7 +21,15 @@ function ColorChameleon.setup(user_config)
 	AutoCommands.setup()
 end
 
--- Setup API commands
-require("color-chameleon.api").setup(ColorChameleon)
+-- Expose API functions on ColorChameleon module
+local Api = require("color-chameleon.api")
+ColorChameleon.enable = Api.enable
+ColorChameleon.disable = Api.disable
+ColorChameleon.status = Api.status
+ColorChameleon.env = Api.env
+ColorChameleon.debug = Api.debug
+
+-- Setup user commands
+Api.setup()
 
 return ColorChameleon

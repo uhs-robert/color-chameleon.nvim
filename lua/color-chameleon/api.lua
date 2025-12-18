@@ -3,77 +3,84 @@
 
 local Api = {}
 
---- Setup API commands
----@param ColorChameleon table The main plugin module
-function Api.setup(ColorChameleon)
-	-- Command to enable camouflage mode
-	vim.api.nvim_create_user_command("ChameleonEnable", function()
-		local Config = require("color-chameleon.config")
-		local AutoCommands = require("color-chameleon.lib.auto_commands")
-		Config.enable()
-		AutoCommands.setup()
-		vim.notify("Color Chameleon: Camouflage enabled", vim.log.levels.INFO)
-	end, {
+--- Enable camouflage mode
+function Api.enable()
+	local Config = require("color-chameleon.config")
+	local AutoCommands = require("color-chameleon.lib.auto_commands")
+	Config.enable()
+	AutoCommands.setup()
+	vim.notify("Color Chameleon: Camouflage enabled", vim.log.levels.INFO)
+end
+
+--- Disable camouflage mode
+function Api.disable()
+	local Config = require("color-chameleon.config")
+	local Chameleon = require("color-chameleon.chameleon")
+	local AutoCommands = require("color-chameleon.lib.auto_commands")
+	Config.disable()
+	AutoCommands.teardown()
+	local fallback = Config.get().fallback
+	Chameleon.reset(fallback)
+	vim.notify("Color Chameleon: Camouflage disabled", vim.log.levels.INFO)
+end
+
+--- Show current status
+function Api.status()
+	local Chameleon = require("color-chameleon.chameleon")
+	local lines = Chameleon.get_status()
+	vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
+end
+
+--- Show environment variables
+function Api.env()
+	local environment = vim.fn.environ()
+	local env_vars = {}
+
+	for k, v in pairs(environment) do
+		table.insert(env_vars, string.format("%s = %s", k, tostring(v)))
+	end
+	table.sort(env_vars)
+
+	if #env_vars == 0 then
+		vim.notify("No environment variables found", vim.log.levels.WARN)
+		return
+	end
+
+	vim.notify(table.concat(env_vars, "\n"), vim.log.levels.INFO, { title = "Environment Variables" })
+end
+
+--- Toggle debug mode
+function Api.debug()
+	local Config = require("color-chameleon.config")
+	local config = Config.get()
+	config.debug = not config.debug
+	local status = config.debug and "enabled" or "disabled"
+	vim.notify("Color Chameleon: Debug mode " .. status, vim.log.levels.INFO)
+end
+
+--- Setup user commands
+function Api.setup()
+	vim.api.nvim_create_user_command("ChameleonEnable", Api.enable, {
 		desc = "Enable ColorChameleon automatic colorscheme switching",
 	})
 
-	-- Command to disable camouflage mode
-	vim.api.nvim_create_user_command("ChameleonDisable", function()
-		local Config = require("color-chameleon.config")
-		local Chameleon = require("color-chameleon.chameleon")
-		local AutoCommands = require("color-chameleon.lib.auto_commands")
-		Config.disable()
-		AutoCommands.teardown()
-		local fallback = Config.get().fallback
-		Chameleon.reset(fallback)
-		vim.notify("Color Chameleon: Camouflage disabled", vim.log.levels.INFO)
-	end, {
+	vim.api.nvim_create_user_command("ChameleonDisable", Api.disable, {
 		desc = "Disable ColorChameleon automatic colorscheme switching",
 	})
 
-	-- Command to show current status
-	vim.api.nvim_create_user_command("ChameleonStatus", function()
-		local Chameleon = require("color-chameleon.chameleon")
-		local lines = Chameleon.get_status()
-		vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
-	end, {
+	vim.api.nvim_create_user_command("ChameleonStatus", Api.status, {
 		desc = "Show ColorChameleon status and configuration",
 	})
 
-	-- Command to show env variables
-	vim.api.nvim_create_user_command("ChameleonEnv", function()
-		local env = vim.fn.environ()
-		local env_vars = {}
+	vim.api.nvim_create_user_command("ChameleonEnv", Api.env, {
+		desc = "Show all environment variables",
+	})
 
-		for k, v in pairs(env) do
-			table.insert(env_vars, string.format("%s = %s", k, tostring(v)))
-		end
-		table.sort(env_vars)
 
-		if #env_vars == 0 then
-			vim.notify("No environment variables found", vim.log.levels.WARN)
-			return
-		end
 
-		vim.notify(table.concat(env_vars, "\n"), vim.log.levels.INFO, { title = "Environment Variables" })
-	end, { desc = "Show all environment variables" })
-
-	-- Expose lua API functions
-	ColorChameleon.enable = function()
-		vim.cmd("ChameleonEnable")
-	end
-
-	ColorChameleon.disable = function()
-		vim.cmd("ChameleonDisable")
-	end
-
-	ColorChameleon.status = function()
-		vim.cmd("ChameleonStatus")
-	end
-
-	ColorChameleon.env = function()
-		vim.cmd("ChameleonEnv")
-	end
+	vim.api.nvim_create_user_command("ChameleonDebug", Api.debug, {
+		desc = "Toggle ColorChameleon debug mode",
+	})
 end
 
 return Api
