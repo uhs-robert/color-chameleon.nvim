@@ -24,7 +24,7 @@ Config.defaults = {
   --     status = "<leader>Cs",
   --     debug = "<leader>Cd",
   --     reload = "<leader>Cr",
-  --     test = "<leader>Ct",
+  --     inspect = "<leader>Ci",
   --   },
   -- },
 }

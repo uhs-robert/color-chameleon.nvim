@@ -31,11 +31,14 @@ end
 ---@param rule_index number The rule index
 ---@param matched boolean Whether the rule matched
 ---@param current_dir string The current directory
-function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir)
+---@param bufnr number|nil Buffer number being checked
+function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir, bufnr)
 	local config = require("color-chameleon.config").get()
 	if not config or not config.debug then
 		return
 	end
+
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
 
 	local status = matched and "✓ MATCHED" or "✗ No match"
 	local parts = { string.format("Rule %d: %s", rule_index, status) }
@@ -47,10 +50,10 @@ function Debug.log_rule_evaluation(rule, rule_index, matched, current_dir)
 		table.insert(parts, string.format("  env: %s", vim.inspect(rule.env)))
 	end
 	if rule.filetype then
-		table.insert(parts, string.format("  filetype: %s (current: %s)", format_value(rule.filetype), vim.bo.filetype))
+		table.insert(parts, string.format("  filetype: %s (current: %s)", format_value(rule.filetype), vim.bo[bufnr].filetype))
 	end
 	if rule.buftype then
-		table.insert(parts, string.format("  buftype: %s (current: %s)", format_value(rule.buftype), vim.bo.buftype))
+		table.insert(parts, string.format("  buftype: %s (current: %s)", format_value(rule.buftype), vim.bo[bufnr].buftype))
 	end
 	if rule.condition then
 		table.insert(parts, "  condition: <function>")
@@ -75,29 +78,54 @@ function Debug.log_colorscheme_change(from, to, reason)
 	Debug.log(message)
 end
 
---- Test which rule would match in the current context
+--- Get inspection report for current buffer and rule matching
 ---@return table lines Array of formatted status lines
-function Debug.test_rules()
+function Debug.get_inspection_report()
 	local Config = require("color-chameleon.config")
 	local Rules = require("color-chameleon.lib.rules")
 	local Directory = require("color-chameleon.lib.directory")
 
 	local config = Config.get()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local win = vim.api.nvim_get_current_win()
+	local win_config = vim.api.nvim_win_get_config(win)
+	local bufname = vim.api.nvim_buf_get_name(bufnr)
+	local basename = vim.fn.fnamemodify(bufname, ":t")
+	local bo = vim.bo[bufnr]
 	local current_dir = Directory.get_effective()
 
-	if not current_dir then
-		vim.notify("No effective directory (special buffer type)", vim.log.levels.WARN)
-		return {}
-	end
-
 	local lines = {
-		"ColorChameleon Rule Test",
+		"ColorChameleon Inspector",
 		"",
-		"Current directory: " .. current_dir,
+		"=== Buffer Info ===",
+		string.format("Buffer: %d", bufnr),
+		string.format("Name: %s", bufname ~= "" and bufname or "(empty)"),
+		string.format("Basename: %s", basename ~= "" and basename or "(empty)"),
+		string.format("Filetype: %s", bo.filetype ~= "" and bo.filetype or "(empty)"),
+		string.format("Buftype: %s", bo.buftype ~= "" and bo.buftype or "(empty)"),
 		"",
+		"=== Buffer Properties ===",
+		string.format("buflisted: %s", tostring(bo.buflisted)),
+		string.format("modifiable: %s", tostring(bo.modifiable)),
+		string.format("readonly: %s", tostring(bo.readonly)),
+		string.format("bufhidden: %s", bo.bufhidden ~= "" and bo.bufhidden or "(empty)"),
+		"",
+		"=== Window Info ===",
+		string.format("Window: %d", win),
+		string.format("Floating: %s", win_config.relative ~= "" and "YES" or "NO"),
+		"",
+		"=== Directory ===",
+		string.format("Current: %s", current_dir or "(unable to determine)"),
+		"",
+		"=== Rule Matching ===",
 	}
 
-	local matching_rule = Rules.find_matching(config.rules)
+	if not current_dir then
+		table.insert(lines, "Cannot evaluate rules (no effective directory)")
+		return lines
+	end
+
+	local matching_rule = Rules.find_matching(config.rules, bufnr)
 
 	if matching_rule then
 		table.insert(lines, "✓ MATCHING RULE FOUND:")

@@ -387,7 +387,7 @@ Color Chameleon provides the following commands:
 - `:ChameleonEnable` - Enable camouflage mode
 - `:ChameleonDisable` - Disable camouflage mode
 - `:ChameleonEnv` - Show your current `vim.env` variables
-- `:ChameleonTest` - Test which rule matches in current context
+- `:ChameleonInspect` - Inspect the current buffer and evaluate rule matches
 - `:ChameleonReload` - Reload configuration and reapply rules
 - `:ChameleonDebug` - Toggle debug mode
 
@@ -407,8 +407,8 @@ chameleon.disable()
 -- Check status
 chameleon.status()
 
--- Run test to see what rules match in current context
-chameleon.test()
+-- Run to inspect buffer/window properties and to see what rules match in current context
+chameleon.inspect()
 
 -- List environment variables
 chameleon.env()
@@ -427,14 +427,14 @@ chameleon.debug()
 
 Default keybindings, when enabled, under `<leader>C` (fully customizable):
 
-| Keymap       | Command            | Description                |
-| ------------ | ------------------ | -------------------------- |
-| `<leader>Cc` | `:ChameleonToggle` | Toggle camouflage mode     |
-| `<leader>Cv` | `:ChameleonEnv`    | Show environment variables |
-| `<leader>Cs` | `:ChameleonStatus` | Show chameleon status      |
-| `<leader>Cd` | `:ChameleonDebug`  | Toggle debug mode          |
-| `<leader>Cr` | `:ChameleonReload` | Reload configuration       |
-| `<leader>Ct` | `:ChameleonTest`   | Test rule matching         |
+| Keymap       | Command             | Description                       |
+| ------------ | ------------------- | --------------------------------- |
+| `<leader>Cc` | `:ChameleonToggle`  | Toggle camouflage mode            |
+| `<leader>Cv` | `:ChameleonEnv`     | Show environment variables        |
+| `<leader>Cs` | `:ChameleonStatus`  | Show chameleon status             |
+| `<leader>Cd` | `:ChameleonDebug`   | Toggle debug mode                 |
+| `<leader>Cr` | `:ChameleonReload`  | Reload configuration              |
+| `<leader>Ci` | `:ChameleonInspect` | Inspect context and rule matching |
 
 Refer to [configuration](-configuration) below on how to disable or customize.
 
@@ -457,7 +457,7 @@ require("color-chameleon").setup({
   --     status = "<leader>Cs",
   --     debug = "<leader>Cd",
   --     reload = "<leader>Cr",
-  --     test = "<leader>Ct"
+  --     inspect = "<leader>Ci"
   --   },
   -- },
 })
