@@ -154,13 +154,10 @@ Boolean values like `true|false` simply check for existence while `string` value
 rules = {
   -- Check if variable exists
   { colorscheme = "gruvbox", env = { SSH_CONNECTION = true } },
-
   -- Check if variable doesn't exist
   { colorscheme = "tokyonight", env = { TMUX = false } },
-
   -- Check for exact value
   { colorscheme = "nord", env = { NODE_ENV = "production" } },
-
   -- Multiple conditions (all must match)
   { colorscheme = "catppuccin", env = { SSH_CONNECTION = true, TMUX = true } },
 }
@@ -211,7 +208,60 @@ require("color-chameleon").setup({
         return hour >= 20 or hour < 6
       end
     },
-
+    -- Use a specific theme when a terminal buffer is open
+    {
+      colorscheme = "tokyonight",
+      condition = function()
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+            return true
+          end
+        end
+        return false
+      end
+    },
+    -- Use different theme based on git branch
+    {
+      colorscheme = "gruvbox",
+      condition = function()
+        local handle = io.popen("git branch --show-current 2>/dev/null")
+        if handle then
+          local branch = handle:read("*a"):gsub("%s+", "")
+          handle:close()
+          return branch == "main" or branch == "master"
+        end
+        return false
+      end
+    },
+    -- Use specific theme for project type (detect by project files)
+    {
+      colorscheme = "nord",
+      condition = function(cwd)
+        -- Rust project
+        return vim.fn.filereadable(cwd .. "/Cargo.toml") == 1
+      end
+    },
+    {
+      colorscheme = "catppuccin",
+      condition = function(cwd)
+        -- Node.js/JavaScript project
+        return vim.fn.filereadable(cwd .. "/package.json") == 1
+      end
+    },
+    -- Use high-contrast theme when in diff mode
+    {
+      colorscheme = "onedark",
+      condition = function()
+        return vim.wo.diff
+      end
+    },
+    -- Use specific theme for read-only files
+    {
+      colorscheme = "gruvbox",
+      condition = function()
+        return vim.bo.readonly or not vim.bo.modifiable
+      end
+    },
   },
 })
 ```
@@ -297,8 +347,6 @@ Refer to [configuration](-configuration) below on how to disable or customize.
 ## ⚙️ Configuration
 
 ### 🍦 Default Options
-
-> Note: All options are top-level. Earlier versions of this README showed a nested `camouflage = { ... }`; that was incorrect and would leave the plugin disabled. Use the shape below.
 
 ```lua
 require("color-chameleon").setup({
