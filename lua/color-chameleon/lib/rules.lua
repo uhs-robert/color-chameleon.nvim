@@ -13,7 +13,7 @@ local function env_matches(env_value, expected)
 	if expected == true then
 		return env_value ~= nil
 	elseif expected == false then
-		return not env_value or env_value == ""
+		return env_value == nil
 	else
 		return env_value == expected
 	end
@@ -50,7 +50,8 @@ local function path_matches(rule_path, current_dir)
 		return false
 	end
 
-	return current_dir:sub(1, #resolved_path) == resolved_path
+	-- Exact match or prefix match with directory separator
+	return current_dir == resolved_path or current_dir:sub(1, #resolved_path + 1) == resolved_path .. "/"
 end
 
 --- Check if custom condition function passes
@@ -85,8 +86,10 @@ function Rules.find_matching(rules)
 		return nil
 	end
 
-	for _, rule in ipairs(rules) do
-		if rule_matches(rule, current_dir) then
+	for i, rule in ipairs(rules) do
+		local matched = rule_matches(rule, current_dir)
+
+		if matched then
 			return rule
 		end
 	end
