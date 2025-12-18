@@ -20,7 +20,7 @@ end
 ---@return string|nil Returns the directory, or nil if the buffer should be ignored
 function Directory.get_effective()
 	local bufnr = vim.api.nvim_get_current_buf()
-	local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
+	local buftype = vim.bo[bufnr].buftype
 
 	-- Ignore special buffer types
 	if buftype ~= "" then
