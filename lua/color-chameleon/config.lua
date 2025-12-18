@@ -55,6 +55,18 @@ function Config.setup(user_config)
 	Config.options = deep_merge(Config.defaults, user_config)
 end
 
+--- Enable ColorChameleon
+function Config.enable()
+	Config.options.enabled = true
+	vim.g.color_chameleon_enabled = true
+end
+
+--- Disable ColorChameleon
+function Config.disable()
+	Config.options.enabled = false
+	vim.g.color_chameleon_enabled = false
+end
+
 --- Get current configuration
 ---@return table config The current configuration
 function Config.get()

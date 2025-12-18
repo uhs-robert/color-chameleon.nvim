@@ -9,6 +9,20 @@ local CAMO = {
 	prev_colorscheme = nil,
 }
 
+--- Reset camouflage state and optionally restore colorscheme
+---@param fallback string|nil Colorscheme to restore to (nil = previous)
+function Chameleon.reset(fallback)
+	local Theme = require("color-chameleon.lib.theme")
+	local restore_to = fallback or CAMO.prev_colorscheme
+
+	if restore_to then
+		Theme.set(restore_to)
+	end
+
+	CAMO.active_rule = nil
+	CAMO.prev_colorscheme = nil
+end
+
 --- Blend into environment by applying colorscheme based on matching rule
 ---@param matching_rule table|nil
 ---@param fallback string|nil
@@ -42,6 +56,12 @@ end
 --- Scan surroundings and adapt colorscheme to match environment
 ---@param config table
 function Chameleon.scan_surroundings(config)
+	config = config or require("color-chameleon.config").get()
+
+	if not config or not config.enabled then
+		return
+	end
+
 	local Directory = require("color-chameleon.lib.directory")
 	if not Directory.get_effective() then
 		return

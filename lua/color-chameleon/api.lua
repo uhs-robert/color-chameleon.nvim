@@ -8,7 +8,9 @@ local Api = {}
 function Api.setup(ColorChameleon)
 	-- Command to enable camouflage mode
 	vim.api.nvim_create_user_command("ChameleonEnable", function()
+		local Config = require("color-chameleon.config")
 		local AutoCommands = require("color-chameleon.lib.auto_commands")
+		Config.enable()
 		AutoCommands.setup()
 		vim.notify("Color Chameleon: Camouflage enabled", vim.log.levels.INFO)
 	end, {
@@ -17,8 +19,13 @@ function Api.setup(ColorChameleon)
 
 	-- Command to disable camouflage mode
 	vim.api.nvim_create_user_command("ChameleonDisable", function()
+		local Config = require("color-chameleon.config")
+		local Chameleon = require("color-chameleon.chameleon")
 		local AutoCommands = require("color-chameleon.lib.auto_commands")
+		Config.disable()
 		AutoCommands.teardown()
+		local fallback = Config.get().fallback
+		Chameleon.reset(fallback)
 		vim.notify("Color Chameleon: Camouflage disabled", vim.log.levels.INFO)
 	end, {
 		desc = "Disable ColorChameleon automatic colorscheme switching",
