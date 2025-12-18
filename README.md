@@ -16,9 +16,9 @@ Automatically <strong>adapt your colorscheme</strong> to your environment, just 
 
 ## 🦎 Overview
 
-**color-chameleon.nvim** lets you set rules for when a colorscheme should be applied. First matching rule wins!
+**color-chameleon.nvim** lets you set rules for when a colorscheme should be applied.
 
-Set colorschemes for projects, environment variables, buffer properties (filetype/buftype), custom conditions, and/or combinations of each.
+Applies colorschemes based on variables such as working directory, environment, buffer properties (filetype/buftype), custom conditions, and/or combinations of each.
 
 Dynamically adapt your skin to the environment you're in and switch back automatically too.
 
@@ -52,7 +52,7 @@ Dynamically adapt your skin to the environment you're in and switch back automat
 - **Smart Switching**: Preserves your previous colorscheme when leaving special contexts
 - **Buffer-Aware**: Considers both global working directory and individual buffer paths
 - **Zero Configuration**: Works out of the box, but highly customizable
-- **Lightweight**: Minimal performance impact with smart caching
+- **Lightweight**: Minimal performance impact
 
 ## 📦 Installation
 
@@ -91,15 +91,41 @@ use {
 }
 ```
 
+### 👨‍⚖️ Rule Structure
+
+Each rule can have the following fields:
+
+- `path` (string or array, optional): Directory path(s) to match. Paths are expanded and symlinks are resolved. Use an array to match any of multiple paths.
+- `colorscheme` (string, required): The colorscheme to apply when this rule matches.
+- `env` (table, optional): Environment variable conditions to check.
+  - Key: environment variable name
+  - Value:
+    - `true` = check if variable exists
+    - `false` = check if variable doesn't exist
+    - string = check if variable equals this exact value
+- `filetype` (string or array, optional): Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
+- `buftype` (string or array, optional): Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
+- `condition` (function, optional): Custom function that receives the current working directory and returns a boolean.
+
+> [!IMPORTANT]
+>
+> Rules are evaluated in order. The first matching rule wins.
+>
+> **All conditions in a rule must match** (AND logic). For example, a rule with both `path` and `filetype` will only match if the current directory matches the path AND the buffer filetype matches.
+>
+> **Arrays within a field use OR logic**. For example, `filetype = {"json", "yaml"}` matches if the filetype is `"json"` OR `"yaml"`.
+
+Refer to [Usage](#-usage) below for examples of each and [Use Cases](#-use-cases) for real world examples.
+
 ## 🚀 Usage
 
-This plugin gives you the freedom to create your own rules for when to apply a colorscheme. This requires you to be both strategic and creative.
+This plugin expects you to be strategic and creative. You'll have to write your own rules.
 
-We'll start first with a basic example then gradually add complexity.
+Here are some examples to help get you started, think of this section as your tutorial.
 
 ### 🖌️ Basic Configuration
 
-Switch theme when in a mount directory:
+Switch theme when in a specific directory:
 
 ```lua
 require("color-chameleon").setup({
@@ -117,7 +143,7 @@ require("color-chameleon").setup({
 <summary>🗃️ Multiple Directories</summary>
 <br>
 <!-- multiple-directories:start -->
-Switch to different themes for different project directories:
+Different themes for different directories:
 
 ```lua
 require("color-chameleon").setup({
@@ -138,7 +164,7 @@ require("color-chameleon").setup({
 <br>
 <!-- environment-switching:start -->
 
-Change themes based on any `vim.env` variables. These are ENV variables from your OS. Use `:ChameleonEnv` to see the ones being used in your current environment:
+Change themes based on any `vim.env` variable. These are ENV variables from your OS.
 
 ```lua
 require("color-chameleon").setup({
@@ -166,6 +192,8 @@ rules = {
 }
 ```
 
+Use `:ChameleonEnv` to see the ENV variables being used in your current environment.
+
 <!-- environment-switching:end -->
 </details>
 
@@ -174,7 +202,7 @@ rules = {
 <br>
 <!-- buffer-properties:start -->
 
-Match rules based on buffer properties like filetype or buffer type:
+Change theme based on buffer properties like filetype or buffer type:
 
 ```lua
 require("color-chameleon").setup({
@@ -223,7 +251,7 @@ require("color-chameleon").setup({
 <br>
 <!-- or-logic:start -->
 
-Use arrays to match **any of** multiple values (OR logic). This works for `path`, `filetype`, and `buftype`:
+You can use arrays to match **any of** multiple values (OR logic). This works for `path`, `filetype`, and `buftype`:
 
 ```lua
 require("color-chameleon").setup({
@@ -259,7 +287,6 @@ require("color-chameleon").setup({
 
 - Arrays within a field use OR logic: match **any** value
 - Multiple fields use AND logic: **all** must match
-- Example: `{ path = ["~/a/", "~/b/"], filetype = ["lua", "vim"] }` matches if you're in `~/a/` OR `~/b/` AND editing `lua` OR `vim`
 
 <!-- or-logic:end -->
 </details>
@@ -301,7 +328,7 @@ require("color-chameleon").setup({
 <summary>🤞 Combine It All</summary>
 <br>
 <!-- multiple-contexts:start -->
-Combine multiple conditions for powerful context-aware theming. All conditions in a rule must match (AND logic):
+Combine multiple conditions for powerful context-aware theming. All conditions in a rule must match:
 
 ```lua
 local is_remote = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_TTY ~= nil
@@ -329,7 +356,7 @@ require("color-chameleon").setup({
     {
       path = "~/projects/sensitive/",           -- In sensitive projects directory
       env = { SSH_CONNECTION = true },          -- AND in an SSH session
-      filetype = "lua",                         -- AND editing a Lua file
+      filetype = {"lua", "md"},                 -- AND editing a Lua or Md file
       buftype = "",                             -- AND it's a normal file (not terminal/help/etc)
       condition = function(cwd)                 -- AND a .secure marker file exists
         return vim.fn.filereadable(cwd .. "/.secure") == 1
@@ -346,7 +373,7 @@ require("color-chameleon").setup({
 </details>
 
 > [!TIP]
-> For even more use case examples, see the [Use Cases](#-use-cases) section below.
+> Now that you know how the plugin works, check out [Use Cases](#-use-cases) below for some real world examples.
 
 ### 🔧 API Commands
 
@@ -369,15 +396,16 @@ Color Chameleon provides the following commands:
 ```lua
 local chameleon = require("color-chameleon")
 
--- Toggle camouflage mode
-chameleon.toggle()
-
 -- Enable/disable programmatically
+chameleon.toggle()
 chameleon.enable()
 chameleon.disable()
 
 -- Check status
 chameleon.status()
+
+-- Run test to see what rules match in current context
+chameleon.test()
 
 -- List environment variables
 chameleon.env()
@@ -431,30 +459,6 @@ require("color-chameleon").setup({
   -- },
 })
 ```
-
-### 👨‍⚖️ Rule Structure
-
-Each rule can have the following fields:
-
-- `path` (string or array, optional): Directory path(s) to match. Paths are expanded and symlinks are resolved. Use an array to match any of multiple paths.
-- `colorscheme` (string, required): The colorscheme to apply when this rule matches.
-- `env` (table, optional): Environment variable conditions to check.
-  - Key: environment variable name
-  - Value:
-    - `true` = check if variable exists
-    - `false` = check if variable doesn't exist
-    - string = check if variable equals this exact value
-- `filetype` (string or array, optional): Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
-- `buftype` (string or array, optional): Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
-- `condition` (function, optional): Custom function that receives the current working directory and returns a boolean.
-
-> [!IMPORTANT]
->
-> Rules are evaluated in order. The first matching rule wins.
->
-> **All conditions in a rule must match** (AND logic). For example, a rule with both `path` and `filetype` will only match if the current directory matches the path AND the buffer filetype matches.
->
-> **Arrays within a field use OR logic**. For example, `filetype = {"json", "yaml"}` matches if the filetype is `"json"` OR `"yaml"`.
 
 ## 💼 Use Cases
 
