@@ -1,8 +1,6 @@
 -- lua/color-chameleon/lib/rules.lua
 -- Rule matching logic
 
-local Directory = require("color-chameleon.lib.directory")
-
 local Rules = {}
 
 --- Check if environment variable matches expected value
@@ -41,6 +39,7 @@ end
 ---@param current_dir string
 ---@return boolean
 local function path_matches(rule_path, current_dir)
+	local Directory = require("color-chameleon.lib.directory")
 	if not rule_path then
 		return true
 	end
@@ -81,19 +80,27 @@ end
 ---@param rules table[]
 ---@return table|nil
 function Rules.find_matching(rules)
+	local Directory = require("color-chameleon.lib.directory")
+	local Debug = require("color-chameleon.lib.debug")
 	local current_dir = Directory.get_effective()
 	if not current_dir then
+		Debug.log("No effective directory found (special buffer type)")
 		return nil
 	end
 
+	Debug.log(string.format("Evaluating %d rules for directory: %s", #rules, current_dir))
+
 	for i, rule in ipairs(rules) do
 		local matched = rule_matches(rule, current_dir)
+		Debug.log_rule_evaluation(rule, i, matched, current_dir)
 
 		if matched then
+			Debug.log(string.format("✓ Rule %d matched, applying colorscheme: %s", i, rule.colorscheme))
 			return rule
 		end
 	end
 
+	Debug.log("No matching rules found")
 	return nil
 end
 
