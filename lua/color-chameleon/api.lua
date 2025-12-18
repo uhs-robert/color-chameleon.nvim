@@ -67,6 +67,15 @@ function Api.reload(user_config)
 	vim.notify("Color Chameleon: Configuration reloaded", vim.log.levels.INFO)
 end
 
+--- Test which rule would match in current context
+function Api.test()
+	local Debug = require("color-chameleon.lib.debug")
+	local lines = Debug.test_rules()
+	if #lines > 0 then
+		vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
+	end
+end
+
 --- Toggle debug mode
 function Api.debug()
 	local Config = require("color-chameleon.config")
@@ -102,6 +111,9 @@ function Api.setup()
 		desc = "Reload ColorChameleon configuration",
 	})
 
+	vim.api.nvim_create_user_command("ChameleonTest", Api.test, {
+		desc = "Test which rule would match in current context",
+	})
 
 	vim.api.nvim_create_user_command("ChameleonDebug", Api.debug, {
 		desc = "Toggle ColorChameleon debug mode",

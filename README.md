@@ -241,6 +241,7 @@ Color Chameleon provides the following commands:
 - `:ChameleonEnable` - Enable camouflage mode
 - `:ChameleonDisable` - Disable camouflage mode
 - `:ChameleonEnv` - Show your current `vim.env` variables
+- `:ChameleonTest` - Test which rule matches in current context
 - `:ChameleonReload` - Reload configuration and reapply rules
 - `:ChameleonDebug` - Toggle debug mode
 
@@ -286,6 +287,7 @@ Default keybindings, when enabled, under `<leader>C` (fully customizable):
 | `<leader>Cs` | `:ChameleonStatus` | Show chameleon status      |
 | `<leader>Cd` | `:ChameleonDebug`  | Toggle debug mode          |
 | `<leader>Cr` | `:ChameleonReload` | Reload configuration       |
+| `<leader>Ct` | `:ChameleonTest`   | Test rule matching         |
 
 Refer to [configuration](-configuration) below on how to disable or customize.
 
@@ -308,6 +310,7 @@ require("color-chameleon").setup({
   --     status = "<leader>Cs",
   --     debug = "<leader>Cd",
   --     reload = "<leader>Cr",
+  --     test = "<leader>Ct"
   --   },
   -- },
 })

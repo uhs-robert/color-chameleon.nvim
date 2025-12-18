@@ -10,6 +10,7 @@ local DEFAULT_KEYMAPS = {
 	status = "s",
 	debug = "d",
 	reload = "r",
+	test = "t",
 }
 
 --- Setup keymaps for ColorChameleon commands
@@ -47,6 +48,10 @@ function Keymaps.setup(opts)
 	vim.keymap.set("n", keymaps.reload, function()
 		vim.cmd("ChameleonReload")
 	end, { desc = "Reload configuration" })
+
+	vim.keymap.set("n", keymaps.test, function()
+		vim.cmd("ChameleonTest")
+	end, { desc = "Test rule matching" })
 
 	-- Check if which-key is installed before registering the group with an icon
 	local ok, wk = pcall(require, "which-key")
