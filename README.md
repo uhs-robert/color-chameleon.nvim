@@ -21,7 +21,9 @@
 
 **color-chameleon.nvim** lets you set conditional rules for when a colorscheme should be applied.
 
-These rules are evaluated in order from top-to-bottom on `VimEnter`, `DirectoryChange`, and `BufEnter`; the first matching rule wins.
+These rules are evaluated in order from top-to-bottom; the first matching rule wins.
+
+Rules are evaluated on `VimEnter`, `DirChanged`, `BufReadPost`, `BufNewFile`, `BufEnter`, and `TermOpen` events.
 
 This allows you to dynamically apply colorschemes based on any condition, the only limit is your imagination.
 

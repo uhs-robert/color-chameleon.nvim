@@ -55,10 +55,30 @@ end
 
 --- Scan surroundings and adapt colorscheme to match environment
 ---@param config table
-function Chameleon.scan_surroundings(config)
+---@param bufnr number|nil Buffer number to check (defaults to current buffer)
+function Chameleon.scan_surroundings(config, bufnr)
 	config = config or require("color-chameleon.config").get()
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
 
 	if not config or not config.enabled then
+		return
+	end
+
+	-- Skip floating windows immediately to avoid infinite loops from debug notifications
+	local win = vim.api.nvim_get_current_win()
+	local win_config = vim.api.nvim_win_get_config(win)
+	if win_config.relative ~= "" then
+		return -- Skip silently, no logging to avoid notification loops
+	end
+
+	-- Skip UI buffers and side panels
+	local Buffer = require("color-chameleon.lib.buffer")
+	local should_skip, skip_reason = Buffer.should_skip(config.rules, bufnr)
+	if should_skip then
+		if skip_reason then
+			local Debug = require("color-chameleon.lib.debug")
+			Debug.log(string.format("Skipping: %s", skip_reason))
+		end
 		return
 	end
 
@@ -68,7 +88,7 @@ function Chameleon.scan_surroundings(config)
 	end
 
 	local Rules = require("color-chameleon.lib.rules")
-	local matching_rule = Rules.find_matching(config.rules)
+	local matching_rule = Rules.find_matching(config.rules, bufnr)
 	blend_in(matching_rule, config.fallback)
 end
 
