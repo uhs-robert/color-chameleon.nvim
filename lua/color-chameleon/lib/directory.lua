@@ -17,26 +17,23 @@ function Directory.realpath(path)
 end
 
 --- Get the effective directory (buffer's directory or global cwd)
----@return string|nil Returns the directory, or nil if the buffer should be ignored
+---@return string|nil Returns the directory, or nil if unable to determine
 function Directory.get_effective()
 	local bufnr = vim.api.nvim_get_current_buf()
-	local buftype = vim.bo[bufnr].buftype
-
-	-- Ignore special buffer types
-	if buftype ~= "" then
-		return nil
-	end
 
 	-- Try to get the directory of the current buffer
 	local bufpath = vim.api.nvim_buf_get_name(bufnr)
 	if bufpath and bufpath ~= "" then
 		local bufdir = vim.fn.fnamemodify(bufpath, ":h")
 		if bufdir and bufdir ~= "" and bufdir ~= "." then
-			return Directory.realpath(bufdir)
+			local resolved = Directory.realpath(bufdir)
+			if resolved then
+				return resolved
+			end
 		end
 	end
 
-	-- Fallback to global cwd
+	-- Fallback to global cwd (works for special buffers like terminal, help, etc.)
 	return Directory.realpath(vim.fn.getcwd())
 end
 
