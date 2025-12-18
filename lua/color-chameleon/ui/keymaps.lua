@@ -5,11 +5,10 @@ local Keymaps = {}
 
 local DEFAULT_PREFIX = "<leader>C"
 local DEFAULT_KEYMAPS = {
-	enable = "e",
-	disable = "d",
+	toggle = "c",
 	env = "v",
 	status = "s",
-	debug = "D",
+	debug = "d",
 	reload = "r",
 }
 
@@ -29,13 +28,9 @@ function Keymaps.setup(opts)
 	vim.keymap.set("n", lead_prefix, "<nop>", { desc = "chameleon" })
 
 	-- Assign keymaps - use vim.cmd to call the user commands
-	vim.keymap.set("n", keymaps.enable, function()
-		vim.cmd("ChameleonEnable")
-	end, { desc = "Enable camouflage mode" })
-
-	vim.keymap.set("n", keymaps.disable, function()
-		vim.cmd("ChameleonDisable")
-	end, { desc = "Disable camouflage mode" })
+	vim.keymap.set("n", keymaps.toggle, function()
+		vim.cmd("ChameleonToggle")
+	end, { desc = "Toggle camouflage mode" })
 
 	vim.keymap.set("n", keymaps.env, function()
 		vim.cmd("ChameleonEnv")

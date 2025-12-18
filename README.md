@@ -237,6 +237,7 @@ require("color-chameleon").setup({
 Color Chameleon provides the following commands:
 
 - `:ChameleonStatus` - Show current status and configuration
+- `:ChameleonToggle` - Toggle camouflage mode on/off
 - `:ChameleonEnable` - Enable camouflage mode
 - `:ChameleonDisable` - Disable camouflage mode
 - `:ChameleonEnv` - Show your current `vim.env` variables
@@ -250,6 +251,9 @@ Color Chameleon provides the following commands:
 
 ```lua
 local chameleon = require("color-chameleon")
+
+-- Toggle camouflage mode
+chameleon.toggle()
 
 -- Enable/disable programmatically
 chameleon.enable()
@@ -275,14 +279,13 @@ chameleon.debug()
 
 Default keybindings, when enabled, under `<leader>C` (fully customizable):
 
-| Keymap       | Command             | Description                |
-| ------------ | ------------------- | -------------------------- |
-| `<leader>Ce` | `:ChameleonEnable`  | Enable camouflage mode     |
-| `<leader>Cd` | `:ChameleonDisable` | Disable camouflage mode    |
-| `<leader>Cv` | `:ChameleonEnv`     | Show environment variables |
-| `<leader>Cs` | `:ChameleonStatus`  | Show chameleon status      |
-| `<leader>CD` | `:ChameleonDebug`   | Toggle debug mode          |
-| `<leader>Cr` | `:ChameleonReload`  | Reload configuration       |
+| Keymap       | Command            | Description                |
+| ------------ | ------------------ | -------------------------- |
+| `<leader>Cc` | `:ChameleonToggle` | Toggle camouflage mode     |
+| `<leader>Cv` | `:ChameleonEnv`    | Show environment variables |
+| `<leader>Cs` | `:ChameleonStatus` | Show chameleon status      |
+| `<leader>Cd` | `:ChameleonDebug`  | Toggle debug mode          |
+| `<leader>Cr` | `:ChameleonReload` | Reload configuration       |
 
 Refer to [configuration](-configuration) below on how to disable or customize.
 
@@ -300,11 +303,10 @@ require("color-chameleon").setup({
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
   --   keymaps = {                 -- Override individual keys
-  --     enable = "<leader>Ce",
-  --     disable = "<leader>Cd",
+  --     toggle = "<leader>Cc",
   --     env = "<leader>Cv",
   --     status = "<leader>Cs",
-  --     debug = "<leader>CD",
+  --     debug = "<leader>Cd",
   --     reload = "<leader>Cr",
   --   },
   -- },

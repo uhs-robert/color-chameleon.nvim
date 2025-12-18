@@ -24,6 +24,16 @@ function Api.disable()
 	vim.notify("Color Chameleon: Camouflage disabled", vim.log.levels.INFO)
 end
 
+--- Toggle camouflage mode
+function Api.toggle()
+	local Config = require("color-chameleon.config")
+	if Config.get().enabled then
+		Api.disable()
+	else
+		Api.enable()
+	end
+end
+
 --- Show current status
 function Api.status()
 	local Chameleon = require("color-chameleon.chameleon")
@@ -74,6 +84,10 @@ function Api.setup()
 
 	vim.api.nvim_create_user_command("ChameleonDisable", Api.disable, {
 		desc = "Disable ColorChameleon automatic colorscheme switching",
+	})
+
+	vim.api.nvim_create_user_command("ChameleonToggle", Api.toggle, {
+		desc = "Toggle ColorChameleon automatic colorscheme switching",
 	})
 
 	vim.api.nvim_create_user_command("ChameleonStatus", Api.status, {

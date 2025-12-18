@@ -25,6 +25,7 @@ end
 local Api = require("color-chameleon.api")
 ColorChameleon.enable = Api.enable
 ColorChameleon.disable = Api.disable
+ColorChameleon.toggle = Api.toggle
 ColorChameleon.status = Api.status
 ColorChameleon.env = Api.env
 ColorChameleon.reload = Api.reload

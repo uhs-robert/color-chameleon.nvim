@@ -19,11 +19,10 @@ Config.defaults = {
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
   --   keymaps = {                 -- Override individual keys
-  --     enable = "<leader>Ce",
-  --     disable = "<leader>Cd",
+  --     toggle = "<leader>Cc",
   --     env = "<leader>Cv",
   --     status = "<leader>Cs",
-  --     debug = "<leader>CD",
+  --     debug = "<leader>Cd",
   --     reload = "<leader>Cr",
   --   },
   -- },
