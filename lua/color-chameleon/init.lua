@@ -27,6 +27,7 @@ ColorChameleon.enable = Api.enable
 ColorChameleon.disable = Api.disable
 ColorChameleon.status = Api.status
 ColorChameleon.env = Api.env
+ColorChameleon.reload = Api.reload
 ColorChameleon.debug = Api.debug
 
 -- Setup user commands

@@ -24,6 +24,7 @@ Config.defaults = {
   --     env = "<leader>Cv",
   --     status = "<leader>Cs",
   --     debug = "<leader>CD",
+  --     reload = "<leader>Cr",
   --   },
   -- },
 }
@@ -94,6 +95,25 @@ end
 ---@return table config The current configuration
 function Config.get()
 	return Config.options
+end
+
+--- Reload configuration and reapply rules
+---@param user_config table|nil Optional new configuration to apply
+function Config.reload(user_config)
+	-- If new config provided, merge it
+	if user_config then
+		Config.setup(user_config)
+	end
+
+	-- Recreate autocommands if enabled
+	if Config.options.enabled then
+		local AutoCommands = require("color-chameleon.lib.auto_commands")
+		AutoCommands.setup()
+
+		-- Re-scan surroundings
+		local Chameleon = require("color-chameleon.chameleon")
+		Chameleon.scan_surroundings(Config.options)
+	end
 end
 
 return Config

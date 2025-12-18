@@ -49,6 +49,14 @@ function Api.env()
 	vim.notify(table.concat(env_vars, "\n"), vim.log.levels.INFO, { title = "Environment Variables" })
 end
 
+--- Reload configuration
+---@param user_config table|nil Optional new configuration
+function Api.reload(user_config)
+	local Config = require("color-chameleon.config")
+	Config.reload(user_config)
+	vim.notify("Color Chameleon: Configuration reloaded", vim.log.levels.INFO)
+end
+
 --- Toggle debug mode
 function Api.debug()
 	local Config = require("color-chameleon.config")
@@ -76,6 +84,9 @@ function Api.setup()
 		desc = "Show all environment variables",
 	})
 
+	vim.api.nvim_create_user_command("ChameleonReload", Api.reload, {
+		desc = "Reload ColorChameleon configuration",
+	})
 
 
 	vim.api.nvim_create_user_command("ChameleonDebug", Api.debug, {
