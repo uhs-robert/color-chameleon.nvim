@@ -170,21 +170,12 @@ rules = {
 <summary>🧩 Custom Conditions</summary>
 <br>
 <!-- custom-conditions:start -->
-With custom functions for complex logic, the only limit is your imagination:
+Use custom functions for any logic you can imagine. The `condition` function receives the current working directory and should return a boolean:
 
 ```lua
 require("color-chameleon").setup({
   enabled = true,
   rules = {
-    -- Use theme when sudo
-    {
-      colorscheme = "oasis-sol",
-      condition = function()
-        local is_sudoedit = vim.env.SUDOEDIT == "1" -- This requires your shell's config to export a flag like: SUDO_EDITOR="env SUDOEDIT=1 /usr/bin/nvim"
-        local is_root = is_sudoedit or uid == 0
-        return is_root
-      end
-    },
     -- Check for a specific file in the directory
     {
       path = "~/projects/",
@@ -193,14 +184,7 @@ require("color-chameleon").setup({
         return vim.fn.filereadable(cwd .. "/.use-nord-theme") == 1
       end
     },
-    -- Use a specific theme for JSON, Conf, and Config files
-    {
-      colorscheme = "onedark",
-      condition = function()
-        return vim.bo.filetype == "json" or vim.bo.filetype == "conf" or vim.bo.filetype == "config"
-      end
-    },
-    -- Use different theme during day/night hours
+    -- Use different theme during night hours
     {
       colorscheme = "gruvbox",
       condition = function()
@@ -208,63 +192,11 @@ require("color-chameleon").setup({
         return hour >= 20 or hour < 6
       end
     },
-    -- Use a specific theme when a terminal buffer is open
-    {
-      colorscheme = "tokyonight",
-      condition = function()
-        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-          if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
-            return true
-          end
-        end
-        return false
-      end
-    },
-    -- Use different theme based on git branch
-    {
-      colorscheme = "gruvbox",
-      condition = function()
-        local handle = io.popen("git branch --show-current 2>/dev/null")
-        if handle then
-          local branch = handle:read("*a"):gsub("%s+", "")
-          handle:close()
-          return branch == "main" or branch == "master"
-        end
-        return false
-      end
-    },
-    -- Use specific theme for project type (detect by project files)
-    {
-      colorscheme = "nord",
-      condition = function(cwd)
-        -- Rust project
-        return vim.fn.filereadable(cwd .. "/Cargo.toml") == 1
-      end
-    },
-    {
-      colorscheme = "catppuccin",
-      condition = function(cwd)
-        -- Node.js/JavaScript project
-        return vim.fn.filereadable(cwd .. "/package.json") == 1
-      end
-    },
-    -- Use high-contrast theme when in diff mode
-    {
-      colorscheme = "onedark",
-      condition = function()
-        return vim.wo.diff
-      end
-    },
-    -- Use specific theme for read-only files
-    {
-      colorscheme = "gruvbox",
-      condition = function()
-        return vim.bo.readonly or not vim.bo.modifiable
-      end
-    },
   },
 })
 ```
+
+For more advanced examples, see the [Use Cases](#-use-cases) section below.
 
 <!-- custom-conditions:end -->
 </details>
@@ -446,6 +378,117 @@ rules = {
 >
 > This is just a simple time of day example. You could sync it to your local sunrise/sunset time too.
 > This would involve passing your latitude and longitude to a weather API like OpenMeteo or using `sunwait` on Linux.
+
+### 🦀 Project Type Detection
+
+Automatically apply themes based on the type of project you're working on:
+
+```lua
+rules = {
+  -- Rust projects
+  {
+    colorscheme = "nord",
+    condition = function(cwd)
+      return vim.fn.filereadable(cwd .. "/Cargo.toml") == 1
+    end
+  },
+  -- Node.js/JavaScript projects
+  {
+    colorscheme = "catppuccin",
+    condition = function(cwd)
+      return vim.fn.filereadable(cwd .. "/package.json") == 1
+    end
+  },
+  -- Python projects
+  {
+    colorscheme = "tokyonight",
+    condition = function(cwd)
+      return vim.fn.filereadable(cwd .. "/pyproject.toml") == 1
+        or vim.fn.filereadable(cwd .. "/setup.py") == 1
+    end
+  },
+}
+```
+
+### 🌿 Git Branch-Based Themes
+
+Use different themes for production branches vs development:
+
+```lua
+rules = {
+  {
+    colorscheme = "gruvbox",  -- High-contrast theme for production
+    condition = function()
+      local handle = io.popen("git branch --show-current 2>/dev/null")
+      if handle then
+        local branch = handle:read("*a"):gsub("%s+", "")
+        handle:close()
+        return branch == "main" or branch == "master"
+      end
+      return false
+    end
+  },
+}
+```
+
+### 📄 Filetype-Specific Themes
+
+Apply specific themes for configuration files or special filetypes:
+
+```lua
+rules = {
+  {
+    colorscheme = "onedark",
+    condition = function()
+      local ft = vim.bo.filetype
+      return ft == "json" or ft == "yaml" or ft == "toml" or ft == "conf"
+    end
+  },
+}
+```
+
+### 🔍 Diff Mode & Read-Only Files
+
+Use high-contrast themes when reviewing diffs or editing read-only files:
+
+```lua
+rules = {
+  -- High contrast for diff mode
+  {
+    colorscheme = "gruvbox",
+    condition = function()
+      return vim.wo.diff
+    end
+  },
+  -- Distinct theme for read-only files
+  {
+    colorscheme = "nord",
+    condition = function()
+      return vim.bo.readonly or not vim.bo.modifiable
+    end
+  },
+}
+```
+
+### 💻 Terminal Buffer Detection
+
+Switch themes when working with terminal buffers (or any buffer type):
+
+```lua
+rules = {
+  {
+    colorscheme = "tokyonight",
+    condition = function()
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+          return true
+        end
+      end
+      return false
+    end
+  },
+}
+```
 
 ## 🤝 Contributing
 
