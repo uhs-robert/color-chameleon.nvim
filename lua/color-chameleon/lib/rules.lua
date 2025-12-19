@@ -153,7 +153,7 @@ function Rules.find_matching(rules, bufnr, messages)
 	end
 
 	local current_buftype = vim.bo[bufnr].buftype
-	Debug.log(messages, string.format("Evaluating %d rules for directory: %s (bufnr: %d, buftype: %s)", #rules, current_dir, bufnr, current_buftype))
+	Debug.log(messages, string.format("Checking %d rules for directory: %s (bufnr: %d, buftype: %s)", #rules, current_dir, bufnr, current_buftype))
 
 	for i, rule in ipairs(rules) do
 		local matched = rule_matches(rule, current_dir, bufnr)

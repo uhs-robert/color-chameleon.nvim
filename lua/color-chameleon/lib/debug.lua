@@ -141,7 +141,7 @@ function Debug.get_inspection_report()
 		return lines
 	end
 
-	local matching_rule = Rules.find_matching(config.rules, bufnr)
+	local matching_rule = Rules.find_matching(config.rules, bufnr, nil)
 
 	if matching_rule then
 		table.insert(lines, "✓ MATCHING RULE FOUND:")
