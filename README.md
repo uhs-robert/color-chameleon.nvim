@@ -14,9 +14,6 @@
   Dynamically <strong>adapt your skin</strong> to the environment you're in, <strong>like a chameleon</strong>.
 </p>
 
-> [!WARNING]
-> Still under construction. Almost done though. Ready to release on December 19th 2025.
-
 ## 🦎 Overview
 
 **color-chameleon.nvim** lets you set conditional rules for when a colorscheme should be applied.
