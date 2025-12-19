@@ -22,7 +22,7 @@ These rules are evaluated in order from top-to-bottom; the first matching rule w
 
 Rules are triggered on `VimEnter`, `DirChanged`, `BufReadPost`, `BufNewFile`, `BufEnter`, and `TermOpen` events.
 
-https://github.com/user-attachments/assets/1e5e7119-2080-4b40-9192-bea77e777949
+https://github.com/user-attachments/assets/7f1a2c50-ad76-4cb4-a214-439ff5521d3b
 
 <details>
 <summary>✨ What's New / 🚨 Breaking Changes</summary>
