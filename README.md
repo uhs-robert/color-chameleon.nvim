@@ -45,13 +45,13 @@ Rules are triggered on `VimEnter`, `DirChanged`, `BufReadPost`, `BufNewFile`, `B
 
 - **Context-Aware Colorschemes**: Automatically switch colorschemes based on:
   - Working directory (local vs remote/mounted filesystems)
-  - Environment variables (SSH sessions, sudo, TMUX, custom vars)
+  - Environment variables (colorterm, sudo, TMUX, custom vars)
   - Buffer properties (filetype, buffer type)
   - Custom functions/conditions (any logic you can write)
 - **Flexible Logic**: Combine conditions with AND logic, use arrays for OR logic
 - **Smart Switching**: Preserves your previous colorscheme when leaving special contexts
 - **Buffer-Aware**: Considers both global working directory and individual buffer paths
-- **Zero Configuration**: Works out of the box, but highly customizable
+- **Simple Configuration**: Express your workflow through intuitive conditional rules
 - **Lightweight**: Minimal performance impact
 
 ## 📦 Installation
@@ -166,13 +166,13 @@ require("color-chameleon").setup({
 <br>
 <!-- environment-switching:start -->
 
-Change themes based on any `vim.env` variable. These are ENV variables from your OS.
+Change themes based on any `vim.env` variable. These are variables set by **Neovim's startup environment** (`vim.env`).
 
 ```lua
 require("color-chameleon").setup({
   enabled = true,
   rules = {
-    { colorscheme = "gruvbox", env = { SSH_CONNECTION = true } }, -- Applies when in an SSH session
+    { colorscheme = "gruvbox", env = { COLORTERM = "truecolor" } }, -- Applies when truecolor is supported
     { colorscheme = "tokyonight", env = { TMUX = true } }, -- Applies when in TMUX
     { path = "~/work/", colorscheme = "catppuccin", env = { WORK_ENV = "production" } }, -- Applies when path AND env are both true
   },
@@ -184,17 +184,21 @@ Boolean values like `true|false` simply check for existence while `string` value
 ```lua
 rules = {
   -- Check if variable exists
-  { colorscheme = "gruvbox", env = { SSH_CONNECTION = true } },
+  { colorscheme = "gruvbox", env = { TMUX = true } },
   -- Check if variable doesn't exist
   { colorscheme = "tokyonight", env = { TMUX = false } },
   -- Check for exact value
   { colorscheme = "nord", env = { NODE_ENV = "production" } },
   -- Multiple conditions (all must match)
-  { colorscheme = "catppuccin", env = { SSH_CONNECTION = true, TMUX = true } },
+  { colorscheme = "catppuccin", env = { TMUX = true, COLORTERM = "truecolor" } },
 }
 ```
 
 Use `:ChameleonEnv` to see the ENV variables being used in your current environment.
+
+> [!IMPORTANT]
+>
+> These variables are inherited when Neovim launches and do not change during runtime.
 
 <!-- environment-switching:end -->
 </details>
@@ -335,7 +339,6 @@ require("color-chameleon").setup({
 Combine multiple conditions for powerful context-aware theming. All conditions in a rule must match:
 
 ```lua
-local is_remote = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_TTY ~= nil
 local uid = (vim.uv or vim.loop).getuid()
 local is_sudoedit = vim.env.SUDOEDIT == "1" -- This requires your shell's config to export a flag like: SUDO_EDITOR="env SUDOEDIT=1 /usr/bin/nvim"
 local is_root = is_sudoedit or uid == 0
@@ -343,10 +346,10 @@ local is_root = is_sudoedit or uid == 0
 require("color-chameleon").setup({
   enabled = true,
   rules = {
-     -- Custom conditions for root/remote contexts
-    { colorscheme = "oasis-abyss", condition = function() return is_root and is_remote end },
+     -- Custom condition for root context
     { colorscheme = "oasis-sol", condition = function() return is_root end },
-    { colorscheme = "oasis-dune", condition = function() return is_remote end },
+
+    -- Single condition for mount directory (remote files SSHFS)
     { path = "~/mnt/", colorscheme = "oasis-mirage" },
 
     -- Combine path + environment
@@ -359,7 +362,7 @@ require("color-chameleon").setup({
     -- This rule only matches when ALL of these are true:
     {
       path = "~/projects/sensitive/",           -- In sensitive projects directory
-      env = { SSH_CONNECTION = true },          -- AND in an SSH session
+      env = { COLORTERM = "truecolor" },        -- AND full terminal color support
       filetype = {"lua", "md"},                 -- AND editing a Lua or Md file
       buftype = "",                             -- AND it's a normal file (not terminal/help/etc)
       condition = function(cwd)                 -- AND a .secure marker file exists
