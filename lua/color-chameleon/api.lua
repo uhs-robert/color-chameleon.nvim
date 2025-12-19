@@ -19,8 +19,8 @@ function Api.disable()
 	local AutoCommands = require("color-chameleon.lib.auto_commands")
 	Config.disable()
 	AutoCommands.teardown()
-	local fallback = Config.get().fallback
-	Chameleon.reset(fallback)
+	local default = Config.get().default
+	Chameleon.reset(default)
 	vim.notify("Color Chameleon: Camouflage disabled", vim.log.levels.INFO)
 end
 

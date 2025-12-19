@@ -10,10 +10,10 @@ local CAMO = {
 }
 
 --- Reset camouflage state and optionally restore colorscheme
----@param fallback string|nil Colorscheme to restore to (nil = previous)
-function Chameleon.reset(fallback)
+---@param default string|nil Colorscheme to restore to (nil = previous)
+function Chameleon.reset(default)
 	local Theme = require("color-chameleon.lib.theme")
-	local restore_to = fallback or CAMO.prev_colorscheme
+	local restore_to = default or CAMO.prev_colorscheme
 
 	if restore_to then
 		Theme.set(restore_to)
@@ -91,7 +91,7 @@ function Chameleon.scan_surroundings(config, bufnr)
 
 	local Rules = require("color-chameleon.lib.rules")
 	local matching_rule = Rules.find_matching(config.rules, bufnr, debug_messages)
-	blend_in(matching_rule, config.fallback)
+	blend_in(matching_rule, config.default)
 
 	-- Flush debug messages at the end of evaluation
 	if debug_messages then
@@ -143,9 +143,9 @@ function Chameleon.get_status()
 			table.insert(lines, rule_desc)
 		end
 
-		if config.fallback then
+		if config.default then
 			table.insert(lines, "")
-			table.insert(lines, "Fallback: " .. config.fallback)
+			table.insert(lines, "Default: " .. config.default)
 		end
 	else
 		table.insert(lines, "Camouflage: disabled")

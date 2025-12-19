@@ -70,6 +70,7 @@ Install the theme with your preferred package manager, such as
       rules = {
         { path = "~/mnt/", colorscheme = "gruvbox" },
       },
+      default = "oasis"
     })
   end
 }
@@ -86,6 +87,7 @@ use {
       rules = {
         { path = "~/mnt/", colorscheme = "gruvbox" },
       },
+      default = "oasis"
     })
   end
 }
@@ -133,7 +135,7 @@ require("color-chameleon").setup({
   rules = {
     { path = "~/mnt/", colorscheme = "oasis-mirage" }, -- check out oasis.nvim for a cool colorscheme pack!
   },
-  fallback = "oasis", -- Optional: colorscheme when no rules match
+  default = "oasis", -- Optional: colorscheme when no rules match
 })
 ```
 
@@ -367,7 +369,7 @@ require("color-chameleon").setup({
     },
 
   },
-  fallback = "oasis", -- Default theme for normal contexts
+  default = "oasis", -- Default theme for normal contexts
 })
 ```
 
@@ -446,7 +448,7 @@ require("color-chameleon").setup({
   enabled = false,  -- Set to true to enable automatic switching
   debug = false,    -- Set to true to enable debug logging
   rules = {},       -- Array of rule tables (see examples above)
-  fallback = nil,   -- Colorscheme when no rules match (nil = restore previous)
+  default = nil,   -- Colorscheme when no rules match (nil = restore previous)
   keymaps = true,   -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")

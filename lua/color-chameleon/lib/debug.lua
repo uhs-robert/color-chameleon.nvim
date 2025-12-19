@@ -164,9 +164,9 @@ function Debug.get_inspection_report()
 		table.insert(lines, "  Colorscheme: " .. matching_rule.colorscheme)
 	else
 		table.insert(lines, "✗ NO MATCHING RULE")
-		if config.fallback then
+		if config.default then
 			table.insert(lines, "")
-			table.insert(lines, "Fallback colorscheme: " .. config.fallback)
+			table.insert(lines, "Default colorscheme: " .. config.default)
 		end
 	end
 

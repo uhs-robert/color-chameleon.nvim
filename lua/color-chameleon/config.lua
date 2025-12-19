@@ -14,7 +14,7 @@ Config.defaults = {
     -- { path = "~/work/", colorscheme = "tokyonight", env = { TMUX = true } },
     -- { colorscheme = "catppuccin", env = { SSH_CONNECTION = true } },
   },
-  fallback = nil, -- Colorscheme to use when no rules match (nil = restore previous)
+  default = nil, -- Colorscheme to use when no rules match (nil = restore previous)
   keymaps = true, -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
@@ -60,9 +60,9 @@ function Config.setup(user_config)
 	local errors = {}
 	local Validate = require("color-chameleon.lib.validate")
 
-	-- Validate fallback type
-	if Config.options.fallback and type(Config.options.fallback) ~= "string" then
-		table.insert(errors, "Fallback must be a string or nil")
+	-- Validate default type
+	if Config.options.default and type(Config.options.default) ~= "string" then
+		table.insert(errors, "Default must be a string or nil")
 	end
 
 	-- Validate rules structure

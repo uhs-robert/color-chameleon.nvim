@@ -49,25 +49,25 @@ function M.check()
 		end
 	end
 
-	-- Check fallback colorscheme
-	if config.fallback then
-		if type(config.fallback) == "string" then
-			if Validate.colorscheme(config.fallback) then
-				health.ok(string.format("Fallback colorscheme '%s' is available", config.fallback))
+	-- Check default colorscheme
+	if config.default then
+		if type(config.default) == "string" then
+			if Validate.colorscheme(config.default) then
+				health.ok(string.format("Default colorscheme '%s' is available", config.default))
 			else
 				health.error(
-					string.format("Fallback colorscheme '%s' not found", config.fallback),
+					string.format("Default colorscheme '%s' not found", config.default),
 					{
-						"Install the colorscheme or change the fallback option",
-						"Set fallback = nil to restore previous colorscheme instead",
+						"Install the colorscheme or change the default option",
+						"Set default = nil to restore previous colorscheme instead",
 					}
 				)
 			end
 		else
-			health.error("Fallback must be a string or nil")
+			health.error("Default must be a string or nil")
 		end
 	else
-		health.info("No fallback colorscheme configured (will restore previous colorscheme)")
+		health.info("No default colorscheme configured (will restore previous colorscheme)")
 	end
 
 	-- Check current state
