@@ -20,7 +20,7 @@
 
 These rules are evaluated in order from top-to-bottom; the first matching rule wins.
 
-Rules are evaluated on `VimEnter`, `DirChanged`, `BufReadPost`, `BufNewFile`, `BufEnter`, and `TermOpen` events.
+Rules are triggered on `VimEnter`, `DirChanged`, `BufReadPost`, `BufNewFile`, `BufEnter`, and `TermOpen` events.
 
 <details>
 <summary>✨ What's New / 🚨 Breaking Changes</summary>
