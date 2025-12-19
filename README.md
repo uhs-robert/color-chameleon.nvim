@@ -266,7 +266,7 @@ require("color-chameleon").setup({
     { path = {"~/work/client-a/", "~/work/client-b/"}, colorscheme = "gruvbox" },
 
     -- Match ANY of these buffer types
-    { buftype = {"help", "quickfix", "nofile"}, colorscheme = "catppuccin" },
+    { buftype = {"terminal", "nofile"}, colorscheme = "catppuccin" },
 
     -- Combine: Match ANY filetype AND a specific path (both conditions must match)
     {
@@ -311,9 +311,9 @@ require("color-chameleon").setup({
         return vim.fn.filereadable(cwd .. "/.use-nord-theme") == 1
       end
     },
-    -- Use different theme during night hours
+    -- Use a different theme during night hours
     {
-      colorscheme = "gruvbox",
+      colorscheme = "oasis-night",
       condition = function()
         local hour = tonumber(os.date("%H"))
         return hour >= 20 or hour < 6
