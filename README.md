@@ -97,17 +97,17 @@ use {
 
 Each rule can have the following fields:
 
-- `path` (**optional**: _string_ or _array_) - Directory path(s) to match (e.g., `"~/mnt/"`, `"~/work/client-a/"`, `{"~/work/client-a, "~/work/client-b/"}`. Use an array to match any of multiple paths.
 - `colorscheme` (**required**: _string_) - The colorscheme to apply when this rule matches.
+- `path` (**optional**: _string_ or _array_) - Directory path(s) to match (e.g., `"~/mnt/"`, `"~/work/client-a/"`, `{"~/work/client-a, "~/work/client-b/"}`. Use an array to match any of multiple paths.
+- `buftype` (**optional**: _string_ or _array_) - Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
+- `filetype` (**optional**: _string_ or _array_) - Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
 - `env` (**optional**: _table_) - Environment variable conditions to check.
   - **Key**: environment variable name
   - **Value**:
     - `true` = check if variable exists
     - `false` = check if variable doesn't exist
     - _string_ = check if variable equals this exact value
-- `filetype` (**optional**: _string_ or _array_): Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
-- `buftype` (**optional**: _string_ or _array_): Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
-- `condition` (**optional**: _function_): Custom function that receives the current working directory and returns a boolean.
+- `condition` (**optional**: _function_) - Custom function that receives the current working directory and returns a boolean.
 
 > [!IMPORTANT]
 >
@@ -465,7 +465,7 @@ require("color-chameleon").setup({
 Real-world scenarios to inspire your workflow:
 
 > [!TIP]
-> You may also want to check out the [rule recipes for submissions from users(https://github.com/uhs-robert/color-chameleon.nvim/discussions/2).
+> You may also want to check out the [rule recipes for submissions from users](https://github.com/uhs-robert/color-chameleon.nvim/discussions/2).
 
 ### 📡 Distinguish Local vs Remote Work
 
