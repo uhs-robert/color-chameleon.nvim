@@ -464,10 +464,10 @@ require("color-chameleon").setup({
 
 Real-world scenarios to inspire your workflow:
 
-> [!TIP]
-> You may also want to check out the [rule recipes for submissions from users](https://github.com/uhs-robert/color-chameleon.nvim/discussions/2).
-
-### 📡 Distinguish Local vs Remote Work
+<details>
+<summary>📡 Distinguish Local vs Remote Work</summary>
+<br>
+<!-- local-vs-remote:start -->
 
 Instantly know when you're working on remote or mounted filesystems:
 
@@ -478,7 +478,13 @@ rules = {
 }
 ```
 
-### 📁 Different Themes for Different Projects
+<!-- local-vs-remote:end -->
+</details>
+
+<details>
+<summary>📁 Different Themes for Different Projects</summary>
+<br>
+<!-- project-themes:start -->
 
 Visually separate work, personal, and client projects:
 
@@ -490,7 +496,13 @@ rules = {
 }
 ```
 
-### 🕵️‍♂️ Warning Theme for Elevated Privileges
+<!-- project-themes:end -->
+</details>
+
+<details>
+<summary>🕵️‍♂️ Warning Theme for Elevated Privileges</summary>
+<br>
+<!-- elevated-privileges:start -->
 
 Use a high-visibility theme when editing as root:
 
@@ -504,7 +516,13 @@ rules = {
 }
 ```
 
-### 🕑️ Time-Based Themes
+<!-- elevated-privileges:end -->
+</details>
+
+<details>
+<summary>🕑️ Time-Based Themes</summary>
+<br>
+<!-- time-based:start -->
 
 Automatically switch between light and dark themes based on time of day.
 
@@ -521,12 +539,17 @@ rules = {
 }
 ```
 
-> [!NOTE]
->
 > This is just a simple time of day example. You could sync it to your local sunrise/sunset time too.
+>
 > This would involve passing your latitude and longitude to a weather API like OpenMeteo or using `sunwait` on Linux.
 
-### 🦀 Project Type Detection
+<!-- time-based:end -->
+</details>
+
+<details>
+<summary>🦀 Project Type Detection</summary>
+<br>
+<!-- project-type:start -->
 
 Automatically apply themes based on the type of project you're working on:
 
@@ -557,7 +580,13 @@ rules = {
 }
 ```
 
-### 🌿 Git Branch-Based Themes
+<!-- project-type:end -->
+</details>
+
+<details>
+<summary>🌿 Git Branch-Based Themes</summary>
+<br>
+<!-- git-branch:start -->
 
 Use different themes for production branches vs development:
 
@@ -578,7 +607,13 @@ rules = {
 }
 ```
 
-### 📄 Filetype-Specific Themes
+<!-- git-branch:end -->
+</details>
+
+<details>
+<summary>📄 Filetype-Specific Themes</summary>
+<br>
+<!-- filetype-themes:start -->
 
 Apply specific themes for configuration files or special filetypes:
 
@@ -604,7 +639,13 @@ rules = {
 }
 ```
 
-### 🔍 Diff Mode & Read-Only Files
+<!-- filetype-themes:end -->
+</details>
+
+<details>
+<summary>🔍 Diff Mode & Read-Only Files</summary>
+<br>
+<!-- diff-readonly:start -->
 
 Use high-contrast themes when reviewing diffs or editing read-only files:
 
@@ -627,7 +668,13 @@ rules = {
 }
 ```
 
-### 💻 Terminal Buffer Detection
+<!-- diff-readonly:end -->
+</details>
+
+<details>
+<summary>💻 Terminal Buffer Detection</summary>
+<br>
+<!-- terminal-buffer:start -->
 
 Switch themes when working with terminal buffers (or any buffer type):
 
@@ -643,13 +690,16 @@ rules = {
     colorscheme = "gruvbox"
   },
 
-  -- Help buffers
-  { buftype = "help", colorscheme = "nord" },
-
   -- Normal file buffers only (exclude special buffers)
   { buftype = "", colorscheme = "catppuccin" },
 }
 ```
+
+<!-- terminal-buffer:end -->
+</details>
+
+> [!TIP]
+> You may also want to check out the [rule recipes for submissions from users](https://github.com/uhs-robert/color-chameleon.nvim/discussions/2).
 
 ## 🙏 Acknowledgments
 
