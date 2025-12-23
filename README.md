@@ -539,9 +539,9 @@ rules = {
 }
 ```
 
-> This is just a simple time of day example. You could sync it to your local sunrise/sunset time too.
+> This is just a simple time of day example using static hours.
 >
-> This would involve passing your latitude and longitude to a weather API like OpenMeteo or using `sunwait` on Linux.
+> A truly [dynamic system based on actual location can be found here](https://github.com/uhs-robert/color-chameleon.nvim/discussions/2#discussioncomment-15330409).
 
 <!-- time-based:end -->
 </details>
