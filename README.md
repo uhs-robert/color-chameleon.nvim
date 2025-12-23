@@ -97,17 +97,17 @@ use {
 
 Each rule can have the following fields:
 
-- `path` (string or array, optional): Directory path(s) to match. Paths are expanded and symlinks are resolved. Use an array to match any of multiple paths.
-- `colorscheme` (string, required): The colorscheme to apply when this rule matches.
-- `env` (table, optional): Environment variable conditions to check.
-  - Key: environment variable name
-  - Value:
+- `path` (**optional**: _string_ or _array_) - Directory path(s) to match (e.g., `"~/mnt/"`, `"~/work/client-a/"`, `{"~/work/client-a, "~/work/client-b/"}`. Use an array to match any of multiple paths.
+- `colorscheme` (**required**: _string_) - The colorscheme to apply when this rule matches.
+- `env` (**optional**: _table_) - Environment variable conditions to check.
+  - **Key**: environment variable name
+  - **Value**:
     - `true` = check if variable exists
     - `false` = check if variable doesn't exist
-    - string = check if variable equals this exact value
-- `filetype` (string or array, optional): Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
-- `buftype` (string or array, optional): Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
-- `condition` (function, optional): Custom function that receives the current working directory and returns a boolean.
+    - _string_ = check if variable equals this exact value
+- `filetype` (**optional**: _string_ or _array_): Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
+- `buftype` (**optional**: _string_ or _array_): Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
+- `condition` (**optional**: _function_): Custom function that receives the current working directory and returns a boolean.
 
 > [!IMPORTANT]
 >
