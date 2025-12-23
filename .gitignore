@@ -1,6 +1,7 @@
 # Private Assets
 assets/screenshots/raw/*
 assets/screenshots/webp/*
+assets/video/*
 
 # Logs
 logs

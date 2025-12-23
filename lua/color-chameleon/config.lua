@@ -6,7 +6,7 @@ local deepcopy = vim.deepcopy
 -- Default configuration
 -- stylua: ignore start
 Config.defaults = {
-  enabled = false, -- Set to true to enable automatic colorscheme switching
+  enabled = true, -- Set to false to disable this plugin
   debug = false, -- Set to true to enable debug logging
   rules = {
     -- Example rule:

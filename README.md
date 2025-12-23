@@ -22,7 +22,7 @@ These rules are evaluated in order from top-to-bottom; the first matching rule w
 
 Rules are triggered on `VimEnter`, `DirChanged`, `BufReadPost`, `BufNewFile`, `BufEnter`, and `TermOpen` events.
 
-https://github.com/user-attachments/assets/7f1a2c50-ad76-4cb4-a214-439ff5521d3b
+<https://github.com/user-attachments/assets/7f1a2c50-ad76-4cb4-a214-439ff5521d3b>
 
 <details>
 <summary>✨ What's New / 🚨 Breaking Changes</summary>
@@ -68,7 +68,6 @@ Install the theme with your preferred package manager, such as
   priority = 900,
   config = function()
     require("color-chameleon").setup({
-      enabled = true,
       rules = {
         { path = "~/mnt/", colorscheme = "gruvbox" },
       },
@@ -85,7 +84,6 @@ use {
   "uhs-robert/color-chameleon.nvim",
   config = function()
     require("color-chameleon").setup({
-      enabled = true,
       rules = {
         { path = "~/mnt/", colorscheme = "gruvbox" },
       },
@@ -133,7 +131,6 @@ Switch theme when in a specific directory:
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,
   rules = {
     { path = "~/mnt/", colorscheme = "oasis-mirage" }, -- check out oasis.nvim for a cool colorscheme pack!
   },
@@ -151,7 +148,6 @@ Different themes for different directories:
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,
   rules = {
     { path = "~/work/", colorscheme = "tokyonight" },
     { path = "~/personal/", colorscheme = "catppuccin" },
@@ -172,7 +168,6 @@ Change themes based on any `vim.env` variable. These are variables set by **Neov
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,
   rules = {
     { colorscheme = "gruvbox", env = { COLORTERM = "truecolor" } }, -- Applies when truecolor is supported
     { colorscheme = "tokyonight", env = { TMUX = true } }, -- Applies when in TMUX
@@ -214,7 +209,6 @@ Change theme based on buffer properties like filetype or buffer type:
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,
   rules = {
     -- Simple filetype matching
     { filetype = "markdown", colorscheme = "nord" },
@@ -265,7 +259,6 @@ You can use arrays to match **any of** multiple values (OR logic). This works fo
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,
   rules = {
     -- Match ANY of these filetypes
     { filetype = {"json", "yaml", "toml", "xml"}, colorscheme = "nord" },
@@ -309,7 +302,6 @@ Use custom functions for any logic you can imagine. The `condition` function rec
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,
   rules = {
     -- Check for a specific file in the directory
     {
@@ -346,7 +338,6 @@ local is_sudoedit = vim.env.SUDOEDIT == "1" -- This requires your shell's config
 local is_root = is_sudoedit or uid == 0
 
 require("color-chameleon").setup({
-  enabled = true,
   rules = {
      -- Custom condition for root context
     { colorscheme = "oasis-sol", condition = function() return is_root end },
@@ -450,7 +441,7 @@ Refer to [configuration](-configuration) below on how to disable or customize.
 
 ```lua
 require("color-chameleon").setup({
-  enabled = false,  -- Set to true to enable automatic switching
+  enabled = true,  -- Set to to false to disable this plugin
   debug = false,    -- Set to true to enable debug logging
   rules = {},       -- Array of rule tables (see examples above)
   default = nil,   -- Colorscheme when no rules match (nil = restore previous)
@@ -472,6 +463,9 @@ require("color-chameleon").setup({
 ## 💼 Use Cases
 
 Real-world scenarios to inspire your workflow:
+
+> [!TIP]
+> You may also want to check out the [rule recipes for submissions from users(https://github.com/uhs-robert/color-chameleon.nvim/discussions/2).
 
 ### 📡 Distinguish Local vs Remote Work
 
@@ -656,10 +650,6 @@ rules = {
   { buftype = "", colorscheme = "catppuccin" },
 }
 ```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🙏 Acknowledgments
 
