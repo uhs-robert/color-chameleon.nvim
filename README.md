@@ -433,7 +433,7 @@ Default keybindings, when enabled, under `<leader>C` (fully customizable):
 | `<leader>Cr` | `:ChameleonReload`  | Reload configuration              |
 | `<leader>Ci` | `:ChameleonInspect` | Inspect context and rule matching |
 
-Refer to [configuration](-configuration) below on how to disable or customize.
+Refer to [configuration](#-configuration) below on how to disable or customize.
 
 ## ⚙️ Configuration
 
