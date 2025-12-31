@@ -14,8 +14,8 @@ Config.defaults = {
     -- { path = "~/work/", colorscheme = "tokyonight", env = { TMUX = true } },
     -- { colorscheme = "catppuccin", env = { SSH_CONNECTION = true } },
   },
-  default = nil, -- Colorscheme to use when no rules match (nil = restore previous)
-  background = nil, -- Default background setting ("light" or "dark", nil = no change)
+  default = nil, -- Default theme when no rules match (nil = restore previous)
+  -- default = { colorscheme = "oasis-lagoon", background = "dark" }
   keymaps = true, -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
@@ -52,32 +52,70 @@ local function deep_merge(base, override)
 	return result
 end
 
+--- Normalize default config to table format with colorscheme and background
+---@param default any User-provided default value
+---@return table normalized Default config as table
+local function normalize_default(default)
+	local fallback_bg = vim.o.background
+
+	if type(default) == "string" then
+		return { colorscheme = default, background = fallback_bg }
+	elseif type(default) == "table" then
+		return {
+			colorscheme = default.colorscheme,
+			background = default.background or fallback_bg,
+		}
+	else
+		-- nil or invalid type - capture current state
+		return { colorscheme = vim.g.colors_name, background = fallback_bg }
+	end
+end
+
+--- Validate default config structure
+---@param default table|nil The default config to validate
+---@return boolean valid Whether validation passed
+---@return string|nil error Error message if validation failed
+local function validate_default(default)
+	if not default then
+		return true
+	end
+
+	if type(default) ~= "table" then
+		return false, "Default must be a table"
+	end
+
+	if default.colorscheme and type(default.colorscheme) ~= "string" then
+		return false, "Default colorscheme must be a string"
+	end
+
+	if default.background then
+		if type(default.background) ~= "string" then
+			return false, "Default background must be a string"
+		end
+		if default.background ~= "light" and default.background ~= "dark" then
+			return false, "Default background must be 'light' or 'dark'"
+		end
+	end
+
+	return true
+end
+
 --- Setup configuration
 ---@param user_config table|nil User configuration to merge with defaults
 function Config.setup(user_config)
 	user_config = user_config or {}
 	Config.options = deep_merge(Config.defaults, user_config)
 
-	-- Capture initial background if not explicitly set
-	if Config.options.background == nil then
-		Config.options.background = vim.o.background
-	end
-
 	local errors = {}
 	local Validate = require("color-chameleon.lib.validate")
 
-	-- Validate default type
-	if Config.options.default and type(Config.options.default) ~= "string" then
-		table.insert(errors, "Default must be a string or nil")
-	end
+	-- Normalize default to table format
+	Config.options.default = normalize_default(Config.options.default)
 
-	-- Validate background type
-	if Config.options.background then
-		if type(Config.options.background) ~= "string" then
-			table.insert(errors, "Background must be a string or nil")
-		elseif Config.options.background ~= "light" and Config.options.background ~= "dark" then
-			table.insert(errors, "Background must be either 'light' or 'dark'")
-		end
+	-- Validate default structure
+	local valid, err = validate_default(Config.options.default)
+	if not valid then
+		table.insert(errors, err)
 	end
 
 	-- Validate rules structure
@@ -86,6 +124,7 @@ function Config.setup(user_config)
 		vim.list_extend(errors, rule_errors)
 	end
 
+	-- Show errors
 	if #errors > 0 then
 		vim.notify(
 			"ColorChameleon: Configuration validation failed:\n" .. table.concat(errors, "\n"),

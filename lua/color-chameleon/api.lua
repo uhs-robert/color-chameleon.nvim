@@ -20,7 +20,8 @@ function Api.disable()
 	Config.disable()
 	AutoCommands.teardown()
 	local config = Config.get()
-	Chameleon.reset(config.default, config.background)
+	local default = config.default or {}
+	Chameleon.reset(default.colorscheme, default.background)
 	vim.notify("Color Chameleon: Camouflage disabled", vim.log.levels.INFO)
 end
 

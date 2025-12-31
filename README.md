@@ -477,8 +477,8 @@ require("color-chameleon").setup({
   enabled = true,    -- Set to to false to disable this plugin
   debug = false,     -- Set to true to enable debug logging
   rules = {},        -- Array of rule tables (see examples above)
-  default = nil,     -- Colorscheme when no rules match (nil = restore previous)
-  background = nil,  -- Default background ("light" or "dark", nil = background at init)
+  default = nil,     -- Default theme when no rules match (nil = restore to state at init)
+                     -- Example: { colorscheme = "oasis-lagoon", background = "dark" } | "oasis-lagoon"
   keymaps = true,    -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")

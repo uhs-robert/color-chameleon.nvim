@@ -26,11 +26,11 @@ end
 
 --- Blend into environment by applying colorscheme based on matching rule
 ---@param matching_rule table|nil
----@param fallback string|nil
----@param fallback_background string|nil
-local function blend_in(matching_rule, fallback, fallback_background)
+---@param default_theme table|nil Default theme table with colorscheme and background
+local function blend_in(matching_rule, default_theme)
 	local Theme = require("color-chameleon.lib.theme")
 	local current_colorscheme = vim.g.colors_name
+	default_theme = default_theme or {}
 
 	-- Entering a directory with matching rule
 	if matching_rule and not CAMO.active_rule then
@@ -45,12 +45,13 @@ local function blend_in(matching_rule, fallback, fallback_background)
 
 	-- Leaving directory with matching rule
 	elseif not matching_rule and CAMO.active_rule then
-		local restore_to = fallback or CAMO.prev_colorscheme
+		local restore_to = default_theme.colorscheme or CAMO.prev_colorscheme
+		local restore_bg = default_theme.background
 		CAMO.active_rule = nil
 		CAMO.prev_colorscheme = nil
 
 		if restore_to then
-			Theme.set(restore_to, fallback_background)
+			Theme.set(restore_to, restore_bg)
 		end
 	end
 end
@@ -93,7 +94,7 @@ function Chameleon.scan_surroundings(config, bufnr)
 
 	local Rules = require("color-chameleon.lib.rules")
 	local matching_rule = Rules.find_matching(config.rules, bufnr, debug_messages)
-	blend_in(matching_rule, config.default, config.background)
+	blend_in(matching_rule, config.default)
 
 	-- Flush debug messages at the end of evaluation
 	if debug_messages then
@@ -145,9 +146,13 @@ function Chameleon.get_status()
 			table.insert(lines, rule_desc)
 		end
 
-		if config.default then
+		if config.default and config.default.colorscheme then
 			table.insert(lines, "")
-			table.insert(lines, "Default: " .. config.default)
+			local default_desc = "Default: " .. config.default.colorscheme
+			if config.default.background then
+				default_desc = default_desc .. " (background: " .. config.default.background .. ")"
+			end
+			table.insert(lines, default_desc)
 		end
 	else
 		table.insert(lines, "Camouflage: disabled")
