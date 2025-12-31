@@ -11,12 +11,13 @@ local CAMO = {
 
 --- Reset camouflage state and optionally restore colorscheme
 ---@param default string|nil Colorscheme to restore to (nil = previous)
-function Chameleon.reset(default)
+---@param background string|nil Optional background setting ("light" or "dark")
+function Chameleon.reset(default, background)
 	local Theme = require("color-chameleon.lib.theme")
 	local restore_to = default or CAMO.prev_colorscheme
 
 	if restore_to then
-		Theme.set(restore_to)
+		Theme.set(restore_to, background)
 	end
 
 	CAMO.active_rule = nil
@@ -26,7 +27,8 @@ end
 --- Blend into environment by applying colorscheme based on matching rule
 ---@param matching_rule table|nil
 ---@param fallback string|nil
-local function blend_in(matching_rule, fallback)
+---@param fallback_background string|nil
+local function blend_in(matching_rule, fallback, fallback_background)
 	local Theme = require("color-chameleon.lib.theme")
 	local current_colorscheme = vim.g.colors_name
 
@@ -34,12 +36,12 @@ local function blend_in(matching_rule, fallback)
 	if matching_rule and not CAMO.active_rule then
 		CAMO.prev_colorscheme = current_colorscheme
 		CAMO.active_rule = matching_rule
-		Theme.set(matching_rule.colorscheme)
+		Theme.set(matching_rule.colorscheme, matching_rule.background)
 
 	-- Switching between different matching rules
 	elseif matching_rule and CAMO.active_rule and matching_rule ~= CAMO.active_rule then
 		CAMO.active_rule = matching_rule
-		Theme.set(matching_rule.colorscheme)
+		Theme.set(matching_rule.colorscheme, matching_rule.background)
 
 	-- Leaving directory with matching rule
 	elseif not matching_rule and CAMO.active_rule then
@@ -48,7 +50,7 @@ local function blend_in(matching_rule, fallback)
 		CAMO.prev_colorscheme = nil
 
 		if restore_to then
-			Theme.set(restore_to)
+			Theme.set(restore_to, fallback_background)
 		end
 	end
 end
@@ -91,7 +93,7 @@ function Chameleon.scan_surroundings(config, bufnr)
 
 	local Rules = require("color-chameleon.lib.rules")
 	local matching_rule = Rules.find_matching(config.rules, bufnr, debug_messages)
-	blend_in(matching_rule, config.default)
+	blend_in(matching_rule, config.default, config.background)
 
 	-- Flush debug messages at the end of evaluation
 	if debug_messages then

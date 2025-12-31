@@ -15,6 +15,7 @@ Config.defaults = {
     -- { colorscheme = "catppuccin", env = { SSH_CONNECTION = true } },
   },
   default = nil, -- Colorscheme to use when no rules match (nil = restore previous)
+  background = nil, -- Default background setting ("light" or "dark", nil = no change)
   keymaps = true, -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
@@ -57,12 +58,26 @@ function Config.setup(user_config)
 	user_config = user_config or {}
 	Config.options = deep_merge(Config.defaults, user_config)
 
+	-- Capture initial background if not explicitly set
+	if Config.options.background == nil then
+		Config.options.background = vim.o.background
+	end
+
 	local errors = {}
 	local Validate = require("color-chameleon.lib.validate")
 
 	-- Validate default type
 	if Config.options.default and type(Config.options.default) ~= "string" then
 		table.insert(errors, "Default must be a string or nil")
+	end
+
+	-- Validate background type
+	if Config.options.background then
+		if type(Config.options.background) ~= "string" then
+			table.insert(errors, "Background must be a string or nil")
+		elseif Config.options.background ~= "light" and Config.options.background ~= "dark" then
+			table.insert(errors, "Background must be either 'light' or 'dark'")
+		end
 	end
 
 	-- Validate rules structure

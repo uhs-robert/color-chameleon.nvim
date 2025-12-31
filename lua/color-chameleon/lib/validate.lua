@@ -62,6 +62,14 @@ function Validate.rule(rule, index)
 	end
 
 	-- Validate optional fields
+	if rule.background then
+		if type(rule.background) ~= "string" then
+			return false, string.format("Rule %d: 'background' must be a string", index)
+		end
+		if rule.background ~= "light" and rule.background ~= "dark" then
+			return false, string.format("Rule %d: 'background' must be either 'light' or 'dark'", index)
+		end
+	end
 	if rule.path then
 		local valid, err = validate_string_or_array(rule.path, "path", index)
 		if not valid then

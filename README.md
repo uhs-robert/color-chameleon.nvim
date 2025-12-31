@@ -98,6 +98,7 @@ use {
 Each rule can have the following fields:
 
 - `colorscheme` (**required**: _string_) - The colorscheme to apply when this rule matches.
+- `background` (**optional**: _string_) - Background setting to apply (`"light"` or `"dark"`). Applied before the colorscheme.
 - `path` (**optional**: _string_ or _array_) - Directory path(s) to match (e.g., `"~/mnt/"`, `"~/work/client-a/"`, `{"~/work/client-a, "~/work/client-b/"}`. Use an array to match any of multiple paths.
 - `buftype` (**optional**: _string_ or _array_) - Buffer type(s) to match (e.g., `"terminal"`, `"help"`, or `{"quickfix", "nofile"}`). Use an array to match any of multiple buffer types.
 - `filetype` (**optional**: _string_ or _array_) - Buffer filetype(s) to match (e.g., `"markdown"`, `"python"`, or `{"lua", "vim"}`). Use an array to match any of multiple filetypes.
@@ -441,11 +442,12 @@ Refer to [configuration](#-configuration) below on how to disable or customize.
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,  -- Set to to false to disable this plugin
-  debug = false,    -- Set to true to enable debug logging
-  rules = {},       -- Array of rule tables (see examples above)
-  default = nil,   -- Colorscheme when no rules match (nil = restore previous)
-  keymaps = true,   -- Set to false to disable, or pass a table to customize:
+  enabled = true,    -- Set to to false to disable this plugin
+  debug = false,     -- Set to true to enable debug logging
+  rules = {},        -- Array of rule tables (see examples above)
+  default = nil,     -- Colorscheme when no rules match (nil = restore previous)
+  background = nil,  -- Default background ("light" or "dark", nil = background at init)
+  keymaps = true,    -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
   --   keymaps = {                 -- Override individual keys
