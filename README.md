@@ -296,6 +296,37 @@ require("color-chameleon").setup({
 </details>
 
 <details>
+<summary>🌓 Background Setting (Light/Dark Mode)</summary>
+<br>
+<!-- background-setting:start -->
+
+Set the background explicitly when applying a colorscheme. Useful for themes that adapt to light/dark backgrounds:
+
+```lua
+require("color-chameleon").setup({
+  rules = {
+    -- Use gruvbox dark for remote systems
+    { path = "~/mnt/", colorscheme = "gruvbox", background = "dark" },
+
+    -- Use light background for reading documentation
+    { filetype = {"markdown", "text"}, colorscheme = "everforest", background = "light" },
+
+    -- Dark background for terminal buffers
+    { buftype = "terminal", colorscheme = "tokyonight", background = "dark" },
+  },
+  default = "nord",
+  background = "dark",  -- Global default background
+})
+```
+
+> [!NOTE]
+>
+> The `background` setting is applied **before** the colorscheme, allowing themes to adapt accordingly.
+
+<!-- background-setting:end -->
+</details>
+
+<details>
 <summary>🧩 Custom Conditions</summary>
 <br>
 <!-- custom-conditions:start -->
@@ -315,6 +346,7 @@ require("color-chameleon").setup({
     -- Use a different theme during night hours
     {
       colorscheme = "oasis-night",
+      background = "dark",
       condition = function()
         local hour = tonumber(os.date("%H"))
         return hour >= 20 or hour < 6
@@ -532,12 +564,13 @@ Automatically switch between light and dark themes based on time of day.
 rules = {
   {
     colorscheme = "catppuccin-latte",
+    background = "light",
     condition = function()
       local hour = tonumber(os.date("%H"))
       return hour >= 6 and hour < 18  -- 6 AM to 6 PM
     end
   },
-  { colorscheme = "catppuccin-mocha" },  -- Fallback for night
+  { colorscheme = "catppuccin-mocha", background = "dark" },  -- Fallback for night
 }
 ```
 
