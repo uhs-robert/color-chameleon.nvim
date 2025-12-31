@@ -16,9 +16,9 @@ function ColorChameleon.setup(user_config)
 		Keymaps.setup(keymap_opts)
 	end
 
-	-- Setup autocommands if enabled
-	local AutoCommands = require("color-chameleon.lib.auto_commands")
-	AutoCommands.setup()
+	-- Initialize chameleon: setup autocommands and apply default if needed
+	local Chameleon = require("color-chameleon.chameleon")
+	Chameleon.initialize(config)
 end
 
 -- Expose API functions on ColorChameleon module

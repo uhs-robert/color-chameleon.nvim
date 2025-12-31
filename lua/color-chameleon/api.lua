@@ -6,9 +6,9 @@ local Api = {}
 --- Enable camouflage mode
 function Api.enable()
 	local Config = require("color-chameleon.config")
-	local AutoCommands = require("color-chameleon.lib.auto_commands")
+	local Chameleon = require("color-chameleon.chameleon")
 	Config.enable()
-	AutoCommands.setup()
+	Chameleon.initialize()
 	vim.notify("Color Chameleon: Camouflage enabled", vim.log.levels.INFO)
 end
 

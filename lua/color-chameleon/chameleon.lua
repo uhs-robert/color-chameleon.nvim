@@ -103,6 +103,39 @@ function Chameleon.scan_surroundings(config, bufnr)
 	end
 end
 
+--- Check if there is an active rule
+---@return boolean
+function Chameleon.has_active_rule()
+	return CAMO.active_rule ~= nil
+end
+
+--- Initialize chameleon: setup autocommands and apply default theme if needed
+--- This should be called after setup or when enabling
+---@param config table|nil Configuration (defaults to current config)
+function Chameleon.initialize(config)
+	config = config or require("color-chameleon.config").get()
+
+	if not config or not config.enabled then
+		return
+	end
+
+	-- Setup autocommands
+	local AutoCommands = require("color-chameleon.lib.auto_commands")
+	AutoCommands.setup()
+
+	-- Scan for matching rules first
+	Chameleon.scan_surroundings(config)
+
+	-- Apply default if no rule matched and current is not the default
+	if config.default and config.default.colorscheme then
+		local current = vim.g.colors_name
+		if not Chameleon.has_active_rule() and current ~= config.default.colorscheme then
+			local Theme = require("color-chameleon.lib.theme")
+			Theme.set(config.default.colorscheme, config.default.background)
+		end
+	end
+end
+
 --- Get status information for ColorChameleon
 ---@return table lines Array of status lines
 function Chameleon.get_status()
