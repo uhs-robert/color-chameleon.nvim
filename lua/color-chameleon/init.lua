@@ -6,19 +6,19 @@ local Config = require("color-chameleon.config")
 --- Setup ColorChameleon with user configuration
 ---@param user_config table|nil User configuration
 function ColorChameleon.setup(user_config)
-	Config.setup(user_config)
+  Config.setup(user_config)
 
-	-- Setup keymaps if enabled
-	local config = Config.get()
-	if config.keymaps ~= false then
-		local Keymaps = require("color-chameleon.ui.keymaps")
-		local keymap_opts = type(config.keymaps) == "table" and config.keymaps or nil
-		Keymaps.setup(keymap_opts)
-	end
+  -- Setup keymaps if enabled
+  local config = Config.get()
+  if config.keymaps ~= false then
+    local Keymaps = require("color-chameleon.ui.keymaps")
+    local keymap_opts = type(config.keymaps) == "table" and config.keymaps or nil
+    Keymaps.setup(keymap_opts)
+  end
 
-	-- Initialize chameleon: setup autocommands and apply default if needed
-	local Chameleon = require("color-chameleon.chameleon")
-	Chameleon.initialize(config)
+  -- Initialize chameleon: setup autocommands and apply default if needed
+  local Chameleon = require("color-chameleon.chameleon")
+  Chameleon.initialize(config)
 end
 
 -- Expose API functions on ColorChameleon module
