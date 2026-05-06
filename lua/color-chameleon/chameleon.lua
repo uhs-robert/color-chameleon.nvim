@@ -117,7 +117,7 @@ function Chameleon.initialize(config)
   Chameleon.scan_surroundings(config)
 
   -- Apply default if no rule matched and current is not the default
-  if config.default and config.default.colorscheme then
+  if config.default and config.default.colorscheme and config.set_on_startup then
     local current = vim.g.colors_name
     if not Chameleon.has_active_rule() and current ~= config.default.colorscheme then
       local Theme = require("color-chameleon.lib.theme")

@@ -66,14 +66,12 @@ Install the theme with your preferred package manager, such as
   "uhs-robert/color-chameleon.nvim",
   lazy = false,
   priority = 900,
-  config = function()
-    require("color-chameleon").setup({
-      rules = {
-        { path = "~/mnt/", colorscheme = "gruvbox" },
-      },
-      default = "oasis"
-    })
-  end
+  opts = {
+    rules = {
+      { path = "~/mnt/", colorscheme = "gruvbox" },
+    },
+    default = "oasis"
+  }
 }
 ```
 
@@ -474,12 +472,12 @@ Refer to [configuration](#-configuration) below on how to disable or customize.
 
 ```lua
 require("color-chameleon").setup({
-  enabled = true,    -- Set to to false to disable this plugin
-  debug = false,     -- Set to true to enable debug logging
-  rules = {},        -- Array of rule tables (see examples above)
-  default = nil,     -- Default theme when no rules match (nil = restore to state at init)
-                     -- Example: { colorscheme = "oasis-lagoon", background = "dark" } | "oasis-lagoon"
-  keymaps = true,    -- Set to false to disable, or pass a table to customize:
+  enabled = true,          -- Set to to false to disable this plugin
+  debug = false,           -- Set to true to enable debug logging
+  rules = {},              -- Array of rule tables (see examples above)
+  default = nil,           -- Default theme when no rules match (nil = restore to state at init)
+  set_on_startup = true,   -- Set colorscheme on startup (use false if event = "VeryLazy")
+  keymaps = true,          -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
   --   keymaps = {                 -- Override individual keys

@@ -15,7 +15,8 @@ Config.defaults = {
     -- { colorscheme = "catppuccin", env = { SSH_CONNECTION = true } },
   },
   default = nil, -- Default theme when no rules match (nil = restore previous)
-  -- default = { colorscheme = "oasis-lagoon", background = "dark" }
+  -- default = { colorscheme = "oasis", background = "dark" }
+  set_on_startup = true, -- Set colorscheme on startup
   keymaps = true, -- Set to false to disable, or pass a table to customize:
   -- keymaps = {
   --   lead_prefix = "<leader>C",  -- Default prefix (default: "<leader>C")
