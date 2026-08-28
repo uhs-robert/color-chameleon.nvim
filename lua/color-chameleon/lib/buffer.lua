@@ -30,6 +30,11 @@ end
 ---@param bufnr number
 ---@return boolean, string|nil reason for skipping (if skipped)
 function Buffer.should_skip(rules, bufnr)
+  -- Skip check when no buftype or filetype
+  for _, rule in ipairs(rules) do
+    if not rule.buftype and not rule.filetype then return false end
+  end
+
   local current_buftype = vim.bo[bufnr].buftype
 
   -- For normal buffers (empty buftype), check if it's a real file
