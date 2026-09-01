@@ -3,15 +3,19 @@
 
 local Theme = {}
 
---- Set colorscheme silently (idempotent, no notifications)
+--- Set colorscheme (idempotent on name and background)
 ---@param name string The name of the colorscheme to apply
 ---@param background string|nil Optional background setting ("light" or "dark")
 function Theme.set(name, background)
-  -- Apply background before colorscheme if provided
-  if background and (background == "light" or background == "dark") then vim.o.background = background end
+  if not name or name == "" then return end
 
-  if not name or name == "" or vim.g.colors_name == name then return end
-  pcall(vim.cmd.colorscheme, name)
+  local bg = (background == "light" or background == "dark") and background or nil
+  if vim.g.colors_name == name and (not bg or vim.o.background == bg) then return end
+
+  if bg then vim.o.background = bg end
+
+  local ok, err = pcall(vim.cmd.colorscheme, name)
+  if not ok then vim.notify(tostring(err), vim.log.levels.ERROR) end
 end
 
 return Theme
